@@ -8,6 +8,10 @@ import Cursor(Cursor(Position))
 data Board = Board String
 data Grid = Grid Int Int
 
+cursorRepresentation = '█'
+upperRow = "+---"
+lowerRow = "|   "
+
 render :: Grid -> Cursor -> String
 render grid cursor =
   boardToString $ setCursor board cursor grid
@@ -15,7 +19,7 @@ render grid cursor =
 
 setCursor :: Board -> Cursor -> Grid -> Board
 setCursor board cursor grid =
-  Board $ replaceChar (boardToString board) index '█'
+  Board $ replaceChar (boardToString board) index cursorRepresentation
   where index = getCursorPositionIndex cursor grid
 
 getCursorPositionIndex :: Cursor -> Grid -> Int
@@ -39,10 +43,10 @@ createBoard (Grid rows cols) =
       (createUpperRow cols) ++ (createLowerRow cols)
 
 createUpperRow :: Int -> String
-createUpperRow cols = createRow cols "+---"
+createUpperRow cols = createRow cols upperRow
 
 createLowerRow :: Int -> String
-createLowerRow cols = createRow cols "|   "
+createLowerRow cols = createRow cols lowerRow
 
 createRow :: Int -> String -> String
 createRow cols row = foldr (++) [head row, '\n'] $ replicate (cols - 1) row

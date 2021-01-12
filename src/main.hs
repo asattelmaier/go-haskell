@@ -1,5 +1,6 @@
 import Data.Char
 import Foreign.C.Types
+import System.Process
 import UserInput(handleUserInput)
 import Render(render, Grid(Grid))
 import Cursor(Cursor(Position), updateCursor)
@@ -13,12 +14,14 @@ main = do
         cursor = Position 0 0
 
 run grid cursor = do
+--- TODO: This will work only on Windows, find a general solution 
+  system "cls"
   putStr $ render grid cursor
   userInput <- getHiddenChar
 
   if (userInput == '\ESC')
   then return ()
-  else run grid $ updateCursor cursor $ handleUserInput userInput 
+  else run grid $ updateCursor cursor $ handleUserInput userInput
 
 
 {-|
