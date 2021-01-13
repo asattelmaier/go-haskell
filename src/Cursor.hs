@@ -1,10 +1,12 @@
 module Cursor
-( Cursor(Position)
+( Cursor (Cursor)
 , updateCursor
 ) where
 
-data Cursor = Position Int Int deriving (Show)
+import Position (Position (Position))
 
-updateCursor :: Cursor -> Cursor -> Cursor
-updateCursor (Position x1 y1) (Position x2 y2) = Position (x1 + x2) (y1 + y2)
 
+data Cursor = Cursor Position
+
+updateCursor :: Cursor -> Position -> Cursor
+updateCursor (Cursor (Position x1 y1)) (Position x2 y2) = Cursor (Position (x1 + x2) (y1 + y2))

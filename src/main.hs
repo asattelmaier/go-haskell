@@ -1,9 +1,10 @@
 import Data.Char
 import Foreign.C.Types
 import System.Process
-import UserInput(handleUserInput)
-import Render(render, Grid(Grid))
-import Cursor(Cursor(Position), updateCursor)
+import Command (Command (Exit, Move), createCommand, commandToPosition)
+import Render (Grid (Grid), render)
+import Cursor (Cursor (Cursor), updateCursor)
+import Position (Position (Position))
 
 -- TODO: Grid should be configurable by the user
 
@@ -11,7 +12,7 @@ main :: IO ()
 main = do
   run grid cursor
   where grid   = Grid 9 9
-        cursor = Position 0 0
+        cursor = Cursor (Position 0 0)
 
 run grid cursor = do
 --- TODO: This will work only on Windows, find a general solution 
@@ -19,16 +20,14 @@ run grid cursor = do
   putStr $ render grid cursor
   userInput <- getHiddenChar
 
-  if (userInput == '\ESC')
+  let command = createCommand userInput
+  let position = commandToPosition command
+
+  if (command == Exit)
   then return ()
-  else run grid $ updateCursor cursor $ handleUserInput userInput
+  else run grid $ updateCursor cursor position
 
-
-{-|
- - LANGUAGE ForeignFunctionInterface (Windows Fix)
- - See: https://gitlab.haskell.org/ghc/ghc/-/issues/2189
--}
-
+{-# LANGUAGE ForeignFunctionInterface #-}
 getHiddenChar = fmap (chr.fromEnum) c_getch
 foreign import ccall unsafe "conio.h getch"
   c_getch :: IO CInt

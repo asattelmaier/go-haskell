@@ -3,7 +3,9 @@ module Render
 , Grid(Grid)
 ) where
 
-import Cursor(Cursor(Position))
+import Position (Position (Position))
+import Cursor (Cursor (Cursor))
+
 
 data Board = Board String
 data Grid = Grid Int Int
@@ -23,7 +25,7 @@ setCursor board cursor grid =
   where index = getCursorPositionIndex cursor grid
 
 getCursorPositionIndex :: Cursor -> Grid -> Int
-getCursorPositionIndex (Position x y) (Grid rows _) = x + y * (rows - 1) * 4 + y * 2
+getCursorPositionIndex (Cursor (Position x y)) (Grid rows _) = x + y * (rows - 1) * 4 + y * 2
 
 
 -- TODO: Separate Functions in Modules
