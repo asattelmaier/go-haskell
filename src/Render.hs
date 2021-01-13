@@ -5,6 +5,7 @@ module Render
 
 import Position (Position (Position))
 import Cursor (Cursor (Cursor))
+import Player (Player (Player, cursor))
 
 
 data Board = Board String
@@ -14,13 +15,13 @@ cursorRepresentation = '█'
 upperRow = "+---"
 lowerRow = "|   "
 
-render :: Grid -> Cursor -> String
-render grid cursor =
-  boardToString $ setCursor board cursor grid
+render :: Grid -> Player -> String
+render grid player =
+  boardToString $ setPlayer board player grid
   where board = createBoard grid
 
-setCursor :: Board -> Cursor -> Grid -> Board
-setCursor board cursor grid =
+setPlayer :: Board -> Player -> Grid -> Board
+setPlayer board (Player {cursor}) grid =
   Board $ replaceChar (boardToString board) index cursorRepresentation
   where index = getCursorPositionIndex cursor grid
 

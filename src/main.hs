@@ -3,21 +3,24 @@ import Foreign.C.Types
 import System.Process
 import Command (Command (Exit, Move), createCommand, commandToPosition)
 import Render (Grid (Grid), render)
-import Cursor (Cursor (Cursor), updateCursor)
+import Cursor (Cursor (Cursor))
 import Position (Position (Position))
+import Player (Player (Player, cursor, color), Color (Black, White), movePlayer)
 
 -- TODO: Grid should be configurable by the user
 
 main :: IO ()
 main = do
-  run grid cursor
+  run grid playerBlack playerWhite
   where grid   = Grid 9 9
-        cursor = Cursor (Position 0 0)
+        playerBlack = Player {cursor = Cursor (Position 0 0), color = Black}
+        playerWhite = Player {cursor = Cursor (Position 0 0), color = Black}
 
-run grid cursor = do
+run :: Grid -> Player -> Player -> IO ()
+run grid activePlayer player = do
 --- TODO: This will work only on Windows, find a general solution 
   system "cls"
-  putStr $ render grid cursor
+  putStr $ render grid activePlayer
   userInput <- getHiddenChar
 
   let command = createCommand userInput
@@ -25,7 +28,7 @@ run grid cursor = do
 
   if (command == Exit)
   then return ()
-  else run grid $ updateCursor cursor position
+  else run grid (movePlayer activePlayer position) player
 
 {-# LANGUAGE ForeignFunctionInterface #-}
 getHiddenChar = fmap (chr.fromEnum) c_getch

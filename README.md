@@ -1,7 +1,7 @@
 ## Build
 
 ```bash
-ghc --make main.hs
+ghc --make -XNamedFieldPuns main.hs
 ```
 
 ## Commands
