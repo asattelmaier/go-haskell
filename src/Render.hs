@@ -1,49 +1,42 @@
 module Render
 ( render
-, Grid(Grid)
 ) where
 
 import Position (Position (Position))
 import Cursor (Cursor (Cursor))
 import Player (Player (Player, cursor))
-
-
-data Board = Board String
-data Grid = Grid Int Int
+import Board (Board)
 
 cursorRepresentation = '█'
 upperRow = "+---"
 lowerRow = "|   "
 
-render :: Grid -> Player -> String
-render grid player =
-  boardToString $ setPlayer board player grid
-  where board = createBoard grid
+render :: Board -> Player -> String
+render board player = renderPlayer renderedBoard player board
+  where renderedBoard = renderBoard board
 
-setPlayer :: Board -> Player -> Grid -> Board
-setPlayer board (Player {cursor}) grid =
-  Board $ replaceChar (boardToString board) index cursorRepresentation
-  where index = getCursorPositionIndex cursor grid
+renderPlayer :: String -> Player -> Board -> String
+renderPlayer renderedBoard (Player {cursor}) board =
+  replaceChar renderedBoard index cursorRepresentation
+  where index = getCursorPositionIndex cursor board
 
-getCursorPositionIndex :: Cursor -> Grid -> Int
-getCursorPositionIndex (Cursor (Position x y)) (Grid rows _) = x + y * (rows - 1) * 4 + y * 2
+getCursorPositionIndex :: Cursor -> Board -> Int
+getCursorPositionIndex (Cursor (Position x y)) board = x + y * (rows - 1) * 4 + y * 2
+  where rows = length $ head board
 
 
 -- TODO: Separate Functions in Modules
 
--- Board Utils
-
-boardToString :: Board -> String
-boardToString (Board board) = board
-
 
 -- Create Board
 
-createBoard :: Grid -> Board
-createBoard (Grid rows cols) =
-  Board $ foldr (++) (createUpperRow cols) $
+renderBoard :: Board -> String
+renderBoard board =
+  foldr (++) (createUpperRow cols) $
     replicate rows $
       (createUpperRow cols) ++ (createLowerRow cols)
+  where rows = length $ head board
+        cols = length board
 
 createUpperRow :: Int -> String
 createUpperRow cols = createRow cols upperRow

@@ -1,34 +1,41 @@
 import Data.Char
 import Foreign.C.Types
 import System.Process
-import Command (Command (Exit, Move), createCommand, commandToPosition)
-import Render (Grid (Grid), render)
+import Command (Command (Exit, Move, PlaceStone), createCommand, commandToPosition)
+import Render (render)
+import Board (Board, createBoard)
 import Cursor (Cursor (Cursor))
 import Position (Position (Position))
-import Player (Player (Player, cursor, color), Color (Black, White), movePlayer)
+import Player (Player (Player), Color (Black, White), movePlayer, createPlayer)
 
--- TODO: Grid should be configurable by the user
+-- TODO: Board should be configurable by the user
 
 main :: IO ()
 main = do
-  run grid playerBlack playerWhite
-  where grid   = Grid 9 9
-        playerBlack = Player {cursor = Cursor (Position 0 0), color = Black}
-        playerWhite = Player {cursor = Cursor (Position 0 0), color = Black}
 
-run :: Grid -> Player -> Player -> IO ()
-run grid activePlayer player = do
+  run board playerBlack playerWhite
+
+  where board       = createBoard 9 9
+        playerBlack = createPlayer Black
+        playerWhite = createPlayer White
+
+
+
+run :: Board -> Player -> Player -> IO ()
+run board activePlayer player = do
 --- TODO: This will work only on Windows, find a general solution 
   system "cls"
-  putStr $ render grid activePlayer
+  putStr $ render board activePlayer
   userInput <- getHiddenChar
 
   let command = createCommand userInput
   let position = commandToPosition command
+  let movedPlayer = movePlayer activePlayer position
+  
+  case command of
+    Exit -> return ()
+    Move _ -> run board movedPlayer player
 
-  if (command == Exit)
-  then return ()
-  else run grid (movePlayer activePlayer position) player
 
 {-# LANGUAGE ForeignFunctionInterface #-}
 getHiddenChar = fmap (chr.fromEnum) c_getch

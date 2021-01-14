@@ -1,5 +1,5 @@
 module Command
-( Command (Exit, Move)
+( Command (Exit, Move, PlaceStone)
 , createCommand
 , commandToPosition
 ) where
@@ -7,7 +7,7 @@ module Command
 import Position (Position (Position))
 
 
-data Command = Exit | Move Position deriving (Show, Eq)
+data Command = Exit | Move Position | PlaceStone Position 
 
 createCommand :: Char -> Command
 createCommand '\ESC' = Exit
@@ -15,6 +15,7 @@ createCommand 'k'    = Move (Position 0 (-1))
 createCommand 'l'    = Move (Position 1 0)
 createCommand 'j'    = Move (Position 0 1)
 createCommand 'h'    = Move (Position (-1) 0)
+createCommand 'g'    = PlaceStone (Position (-1) 0)
 createCommand other  = Move (Position 0 0)
 
 commandToPosition :: Command -> Position
