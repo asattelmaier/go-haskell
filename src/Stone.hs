@@ -2,7 +2,10 @@ module Stone
 ( Stone (Stone)
 ) where
 
-import Player (Color)
+
+
+import Board (Color)
+
 
 
 data Stone = Stone Color deriving (Show)

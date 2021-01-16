@@ -1,5 +1,1 @@
-*.hi
-*.swp
-*.o
-*.exe
-main
+dist

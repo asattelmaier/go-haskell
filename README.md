@@ -1,7 +1,7 @@
 ## Build
 
 ```bash
-ghc --make -XNamedFieldPuns main.hs
+cabal run
 ```
 
 ## Commands

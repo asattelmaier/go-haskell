@@ -1,3 +1,5 @@
+{-# LANGUAGE NamedFieldPuns #-}
+
 module Game
 ( Game (Game, board, activePlayer, passivePlayer)
 , createGame
