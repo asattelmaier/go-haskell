@@ -13,3 +13,9 @@ ghc --make -XNamedFieldPuns main.hs
 | l   | Move right |
 | j   | Move down  |
 | h   | Move left  |
+
+
+## OS Support
+
+Only UNIX and UNIX-like operating systems are supported.
+
