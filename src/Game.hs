@@ -30,7 +30,7 @@ createGame lines = Game { board         = createBoard lines lines
 
 
 placeStone :: Game -> Position -> Game
-placeStone (Game {board, activePlayer, passivePlayer}) (Position x y) =
+placeStone Game {board, activePlayer, passivePlayer} (Position x y) =
   Game { board         = setPoint board x y (Stone activePlayer)
        , activePlayer  = passivePlayer
        , passivePlayer = activePlayer

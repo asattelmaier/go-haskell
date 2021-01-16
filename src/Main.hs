@@ -14,9 +14,7 @@ import Cursor              (Cursor, createCursor, translateCursor)
 
 
 main :: IO ()
-main = do
-
-  run game cursor
+main = run game cursor
 
 -- TODO: Board should be configurable by the user
   where game   = createGame 9

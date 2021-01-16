@@ -8,5 +8,5 @@ import Board (Color)
 
 
 
-data Stone = Stone Color deriving (Show)
+newtype Stone = Stone Color deriving (Show)
 
