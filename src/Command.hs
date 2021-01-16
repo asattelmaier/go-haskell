@@ -1,22 +1,19 @@
 module Command
-( Command (Exit, Move, PlaceStone)
+( Command (ExitGame, MoveCursor, PlaceStone)
 , createCommand
-, commandToPosition
 ) where
 
 import Position (Position (Position))
 
 
-data Command = Exit | Move Position | PlaceStone Position 
+data Command = ExitGame | MoveCursor Position | PlaceStone
 
 createCommand :: Char -> Command
-createCommand '\ESC' = Exit
-createCommand 'k'    = Move (Position 0 (-1))
-createCommand 'l'    = Move (Position 1 0)
-createCommand 'j'    = Move (Position 0 1)
-createCommand 'h'    = Move (Position (-1) 0)
-createCommand 'g'    = PlaceStone (Position (-1) 0)
-createCommand other  = Move (Position 0 0)
+createCommand '\ESC' = ExitGame
+createCommand 'k'    = MoveCursor (Position 0 (-1))
+createCommand 'l'    = MoveCursor (Position 1 0)
+createCommand 'j'    = MoveCursor (Position 0 1)
+createCommand 'h'    = MoveCursor (Position (-1) 0)
+createCommand 'g'    = PlaceStone
+createCommand other  = MoveCursor (Position 0 0)
 
-commandToPosition :: Command -> Position
-commandToPosition (Move (Position x y)) = Position x y

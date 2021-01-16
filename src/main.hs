@@ -1,43 +1,42 @@
 import Data.Char
+import Data.Maybe
 import Foreign.C.Types
 import System.Process
-import Command         (Command (Exit, Move, PlaceStone), createCommand, commandToPosition)
-import Render          (render)
-import Board           (Board, createBoard)
-import Cursor          (Cursor (Cursor))
-import Position        (Position (Position))
-import Player          (Player (Player), Color (Black, White), movePlayer, createPlayer)
-import Game            (Game (Game, board, activePlayer, passivePlayer), createGame)
+import Command         (Command (ExitGame, MoveCursor, PlaceStone), createCommand)
+import Game            (Game (Game, board, activePlayer, passivePlayer), createGame, placeStone)
+import Render          (render, cursorToPosition)
+import Cursor          (Cursor, createCursor, translateCursor)
 
 -- TODO: Board should be configurable by the user
 
 main :: IO ()
 main = do
 
-  run game
+  run game cursor
 
-  where game = createGame 9
+  where game   = createGame 9
+        cursor = createCursor
 
 
 
-run :: Game -> IO ()
-run game = do
+run :: Game -> Cursor -> IO ()
+run game cursor = do
 --- TODO: This will work only on Windows, find a general solution 
   system "cls"
-  putStr $ render game
+  putStr $ render game cursor
   userInput <- getHiddenChar
 
   let command = createCommand userInput
-  let position = commandToPosition command
-  let movedPlayer = movePlayer (getActivePlayer game) position
   
   case command of
-    Exit -> return ()
-    Move _ -> run $ updateGame game movedPlayer
+    ExitGame          -> return ()
+    MoveCursor vector -> run game (translateCursor cursor vector)
+    PlaceStone
+      | isNothing position -> run game cursor
+      | otherwise          -> run (placeStone game (fromJust position)) cursor
+      where position = cursorToPosition cursor
 
-  where getActivePlayer Game {activePlayer} = activePlayer
-        updateGame (Game {activePlayer, passivePlayer, board}) player =
-          Game {activePlayer = player, passivePlayer, board}
+
 
 
 {-# LANGUAGE ForeignFunctionInterface #-}

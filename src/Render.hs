@@ -1,66 +1,81 @@
 module Render
 ( render
+, cursorToPosition
 ) where
 
 
 
 import Position (Position (Position))
-import Cursor   (Cursor (Cursor))
-import Player   (Player (Player, cursor))
-import Board    (Board)
+import Board    (Board, Point (Empty, Stone), Color (White, Black))
 import Game     (Game (Game, board, activePlayer))
+import Cursor   (Cursor)
 
 
 
 cursorRepresentation = '█'
-upperRow = "+---"
-lowerRow = "|   "
+emptyPoint           = "+---"
+blackPoint           = "X---"
+whitePoint           = "O---"
+separatorRow         = "|   "
 
 
 
-render :: Game -> String
-render game = renderedGame
-  where renderedGame  = renderPlayer renderedBoard game
-        renderedBoard = renderBoard $ getBoard game
-        getBoard Game {board} = board
+render :: Game -> Cursor -> String
+render game cursor = renderCursor game cursor $ renderBoard game
 
 
 
-renderPlayer :: String -> Game -> String
-renderPlayer renderedBoard (Game {board, activePlayer = Player {cursor}}) =
+cursorToPosition :: Cursor -> Maybe Position
+cursorToPosition (Position x y)
+  | isOnPoint = Just (Position positionY positionX)
+  | otherwise = Nothing
+  where positionX  = x `div` (length emptyPoint)
+        positionY  = y `div` 2
+        isOnPoint  = isXOnPoint && isYOnPoint
+        isXOnPoint = x `mod` (length emptyPoint) == 0
+        isYOnPoint = y `mod` 2 == 0
+
+
+
+renderCursor :: Game -> Cursor -> String -> String
+renderCursor (Game {board}) cursor renderedBoard =
   replaceChar renderedBoard index cursorRepresentation
   where index = getCursorPositionIndex cursor board
 
 
 
 getCursorPositionIndex :: Cursor -> Board -> Int
-getCursorPositionIndex (Cursor (Position x y)) board = x + y * (rows - 1) * 4 + y * 2
+getCursorPositionIndex (Position x y) board = x + y * (rows - 1) * 4 + y * 2
   where rows = length $ head board
 
 
 
-renderBoard :: Board -> String
-renderBoard board =
-  foldr (++) (createUpperRow cols) $
-    replicate rows $
-      (createUpperRow cols) ++ (createLowerRow cols)
-  where rows = length $ head board
-        cols = length board
+renderBoard :: Game -> String
+renderBoard Game {board} = removeLastLine $ concat $ map renderPoints board
+  where removeLastLine = take $ rows * rowWidth * 2 - rowWidth
+        rows           = length board
+        rowWidth       = colWidth * (rows - 1) + 2
+        colWidth       = length emptyPoint
 
 
 
-createUpperRow :: Int -> String
-createUpperRow cols = createRow cols upperRow
+renderPoints :: [Point] -> String
+renderPoints points = unlines $ [upperRow] ++ [lowerRow]
+  where upperRow = renderRow $ map renderPoint points
+        lowerRow = renderRow $ replicate (length points) separatorRow
 
 
 
-createLowerRow :: Int -> String
-createLowerRow cols = createRow cols lowerRow
+renderRow :: [String] -> String
+renderRow a = take ((length a - 1) * (length emptyPoint) + 1) $ concat a
 
 
 
-createRow :: Int -> String -> String
-createRow cols row = foldr (++) [head row, '\n'] $ replicate (cols - 1) row
+renderPoint :: Point -> String
+renderPoint Empty         = emptyPoint
+renderPoint (Stone Black) = blackPoint
+renderPoint (Stone White) = whitePoint
+
 
 
 
