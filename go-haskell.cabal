@@ -15,12 +15,12 @@ executable go-haskell
   main-is:             Main.hs
   other-modules:
     Board
-    Command
-    Cursor
     Game
-    Position
-    Render
     Stone
+    Location
+    UserInterface.Command
+    UserInterface.Cursor
+    UserInterface.Render
   build-depends:
     base               >=4.11 && <4.12,
     process            == 1.*

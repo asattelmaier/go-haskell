@@ -6,10 +6,10 @@ import Data.Char
 import Data.Maybe
 import System.Process
 import System.IO
-import Command             (Command (ExitGame, MoveCursor, PlaceStone), createCommand)
-import Game                (Game (Game, board, activePlayer, passivePlayer), createGame, placeStone)
-import Render              (render, cursorToPosition)
-import Cursor              (Cursor, createCursor, translateCursor)
+import Game                  (Game (Game, board, activePlayer, passivePlayer), createGame, placeStone)
+import UserInterface.Command (Command (ExitGame, MoveCursor, PlaceStone), createCommand)
+import UserInterface.Cursor  (Cursor, createCursor, translateCursor)
+import UserInterface.Render  (render, cursorToLocation)
 
 
 
@@ -32,12 +32,12 @@ run game cursor = do
   let command = createCommand userInput
   
   case command of
-    ExitGame          -> return ()
-    MoveCursor vector -> run game (translateCursor cursor vector)
+    ExitGame               -> return ()
+    MoveCursor translation -> run game (translateCursor cursor translation)
     PlaceStone
-      | isNothing position -> run game cursor
-      | otherwise          -> run (placeStone game (fromJust position)) cursor
-      where position = cursorToPosition cursor
+      | isNothing location -> run game cursor
+      | otherwise          -> run (placeStone game (fromJust location)) cursor
+      where location = cursorToLocation cursor
 
 
 

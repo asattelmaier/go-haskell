@@ -1,44 +1,40 @@
 module Board
 ( Board
-, Point (Empty, Stone)
+, State (Empty, Stone)
 , Color (Black, White)
 , createBoard
-, setPoint
+, updatePosition
 ) where
 
 
 
-data Color  = Black | White deriving (Show)
-data Point = Empty | Stone Color deriving (Show)
-type Board = [[Point]]
+data Color        = Black | White deriving (Show)
+data State        = Empty | Stone Color deriving (Show)
+type Intersection = State
+type Board        = [[Intersection]]
 
 
 
 createBoard :: Int -> Int -> Board
-createBoard = createPoints
+createBoard 0    cols = []
+createBoard rows cols = createBoard (rows - 1) cols ++ [createIntersections cols]
 
 
 
-createPoints :: Int -> Int -> [[Point]]
-createPoints 0    cols = []
-createPoints rows cols = createPoints (rows - 1) cols ++ [createRow cols]
+createIntersections :: Int -> [Intersection]
+createIntersections 0    = []
+createIntersections cols = createIntersections (cols - 1) ++ [Empty]
 
 
 
-createRow :: Int -> [Point]
-createRow 0    = []
-createRow cols = createRow (cols - 1) ++ [Empty]
+updatePosition :: Board -> Int -> Int -> State -> Board
+updatePosition (x:xs) horizontalLine verticalLine state
+  | horizontalLine == 0  = updateState x verticalLine state:xs
+  | otherwise            = x:updatePosition xs (horizontalLine - 1) verticalLine state
 
 
 
-setPoint :: Board -> Int -> Int -> Point -> Board
-setPoint (x:xs) row col stone
-  | row == 0  = setPointInRow x col stone:xs
-  | otherwise = x:setPoint xs (row - 1) col stone
-
-
-
-setPointInRow :: [Point] -> Int -> Point -> [Point]
-setPointInRow (x:xs) col point
-  | col == 0  = point:xs
-  | otherwise = x:setPointInRow xs (col - 1) point
+updateState :: [State] -> Int -> State -> [State]
+updateState (x:xs) verticalLine state
+  | verticalLine == 0  = state:xs
+  | otherwise          = x:updateState xs (verticalLine - 1) state

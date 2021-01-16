@@ -8,8 +8,8 @@ module Game
 
 
 
-import Board    (Board, Point (Stone), Color (Black, White), createBoard, setPoint)
-import Position (Position (Position))
+import Board    (Board, State (Stone), Color (Black, White), createBoard, updatePosition)
+import Location (Location (Location))
 
 
 
@@ -29,9 +29,9 @@ createGame lines = Game { board         = createBoard lines lines
 
 
 
-placeStone :: Game -> Position -> Game
-placeStone Game {board, activePlayer, passivePlayer} (Position x y) =
-  Game { board         = setPoint board x y (Stone activePlayer)
+placeStone :: Game -> Location -> Game
+placeStone Game {board, activePlayer, passivePlayer} (Location x y) =
+  Game { board         = updatePosition board x y (Stone activePlayer)
        , activePlayer  = passivePlayer
        , passivePlayer = activePlayer
        }
