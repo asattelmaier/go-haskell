@@ -7,9 +7,8 @@ module UserInterface.Render
 
 
 
-import Location               (Location (Location))
-import Board                  (Board, Intersection (Intersection), State (Empty, Stone), Color (White, Black))
-import Game                   (Game (Game, board, activePlayer))
+import Go.Board
+import Go.Game                (Game (Game, board, activePlayer))
 import UserInterface.Cursor   (Cursor (Cursor))
 
 

@@ -1,7 +1,8 @@
-module Board
+module Go.Board
 ( Board
 , State (Empty, Stone)
 , Color (Black, White)
+, Location (Location)
 , Intersection (Intersection)
 , createBoard
 , placeStone
@@ -13,10 +14,10 @@ module Board
 
 import Data.List
 import Data.Maybe
-import Location (Location (Location))
 
 
 
+data Location     = Location Int Int deriving (Show, Eq)
 data Color        = Black | White deriving (Show, Eq)
 data State        = Empty | Stone Color deriving (Show, Eq)
 data Intersection = Intersection Location State deriving (Show, Eq)

@@ -1,6 +1,6 @@
 {-# LANGUAGE NamedFieldPuns #-}
 
-module Game
+module Go.Game
 ( Game (Game, board, activePlayer, passivePlayer)
 , createGame
 , play
@@ -8,15 +8,7 @@ module Game
 
 
 
-import Board    (Board
-                , State (Stone, Empty)
-                , Color (Black, White)
-                , createBoard
-                , placeStone
-                , isLocationEmpty
-                , removeStonesWithoutLiberties
-                )
-import Location (Location (Location))
+import Go.Board
 
 
 

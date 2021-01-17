@@ -3,10 +3,15 @@ module UserInterface.Command
 , createCommand
 ) where
 
+
+
 import UserInterface.Cursor (Cursor (Cursor))
 
 
+
 data Command = ExitGame | MoveCursor Cursor | PlaceStone
+
+
 
 createCommand :: Char -> Command
 createCommand '\ESC' = ExitGame

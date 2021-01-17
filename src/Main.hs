@@ -6,7 +6,7 @@ import Data.Char
 import Data.Maybe
 import System.Process
 import System.IO
-import Game                  (Game (Game, board, activePlayer, passivePlayer), createGame, play)
+import Go.Game               (Game, createGame, play)
 import UserInterface.Command (Command (ExitGame, MoveCursor, PlaceStone), createCommand)
 import UserInterface.Cursor  (Cursor, createCursor, translateCursor)
 import UserInterface.Render  (render, cursorToLocation)

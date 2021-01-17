@@ -14,10 +14,8 @@ cabal-version:       >=1.10
 executable go-haskell
   main-is:             Main.hs
   other-modules:
-    Board
-    Game
-    Stone
-    Location
+    Go.Game
+    Go.Board
     UserInterface.Command
     UserInterface.Cursor
     UserInterface.Render
