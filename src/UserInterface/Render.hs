@@ -8,7 +8,7 @@ module UserInterface.Render
 
 
 import Location               (Location (Location))
-import Board                  (Board, State (Empty, Stone), Color (White, Black))
+import Board                  (Board, Intersection (Intersection), State (Empty, Stone), Color (White, Black))
 import Game                   (Game (Game, board, activePlayer))
 import UserInterface.Cursor   (Cursor (Cursor))
 
@@ -58,24 +58,24 @@ getCursorLocationIndex (Cursor x y) board = x + y * (horizontalLines - 1) * 4 + 
 
 renderBoard :: Game -> String
 renderBoard Game {board} = removeLastLine $ concatMap renderGrid board
-  where removeLastLine = take $ horizontalLines * horizontalLineWidth * (1 + horizontalGutterSpace) - lastLine
+  where removeLastLine      = take $ horizontalLines * horizontalLineWidth * (1 + horizontalGutterSpace) - lastLine
         horizontalLines     = length board
         horizontalLineWidth = (verticalGutterSpace + 1) * (horizontalLines - 1) + 2
         lastLine            = horizontalGutterSpace * horizontalLineWidth
 
 
 
-renderGrid :: [State] -> String
-renderGrid states = unlines $ renderHorizontalLine states : renderVerticalLines states
+renderGrid :: [Intersection] -> String
+renderGrid intersections = unlines $ renderHorizontalLine intersections : renderVerticalLines intersections
 
 
 
-renderHorizontalLine :: [State] -> String
+renderHorizontalLine :: [Intersection] -> String
 renderHorizontalLine = renderLine . map (renderHorizontalGutter . renderIntersection)
 
 
 
-renderVerticalLines :: [State] -> [String]
+renderVerticalLines :: [Intersection] -> [String]
 renderVerticalLines = replicate horizontalGutterSpace . renderLine . map renderVerticalLine 
 
 
@@ -90,15 +90,15 @@ renderHorizontalGutter = flip (:) (replicate verticalGutterSpace horizontalGutte
 
 
 
-renderVerticalLine :: State -> String
+renderVerticalLine :: Intersection -> String
 renderVerticalLine _ = verticalGutter:replicate verticalGutterSpace gutter
 
 
 
-renderIntersection :: State -> Char
-renderIntersection Empty         = empty
-renderIntersection (Stone Black) = blackStone
-renderIntersection (Stone White) = whiteStone
+renderIntersection :: Intersection -> Char
+renderIntersection (Intersection location Empty)         = empty
+renderIntersection (Intersection location (Stone Black)) = blackStone
+renderIntersection (Intersection location (Stone White)) = whiteStone
 
 
 

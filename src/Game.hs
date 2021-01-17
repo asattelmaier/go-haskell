@@ -3,12 +3,19 @@
 module Game
 ( Game (Game, board, activePlayer, passivePlayer)
 , createGame
-, placeStone
+, play
 ) where
 
 
 
-import Board    (Board, State (Stone), Color (Black, White), createBoard, updatePosition)
+import Board    (Board
+                , State (Stone, Empty)
+                , Color (Black, White)
+                , createBoard
+                , placeStone
+                , isLocationEmpty
+                , removeStonesWithoutLiberties
+                )
 import Location (Location (Location))
 
 
@@ -22,17 +29,34 @@ data Game = Game { board         :: Board
 
 
 createGame :: Int -> Game
-createGame lines = Game { board         = createBoard lines lines
+createGame lines = Game { board         = createBoard lines
                         , activePlayer  = Black
                         , passivePlayer = White
                         }
 
 
 
-placeStone :: Game -> Location -> Game
-placeStone Game {board, activePlayer, passivePlayer} (Location x y) =
-  Game { board         = updatePosition board x y (Stone activePlayer)
-       , activePlayer  = passivePlayer
-       , passivePlayer = activePlayer
-       }
+play :: Game -> Location -> Game
+play game location = 
+  capture $
+  playStone game location
 
+
+
+playStone :: Game -> Location -> Game
+playStone Game {board, activePlayer, passivePlayer} location
+  | isEmpty     = Game { board         = placeStone board location (Stone activePlayer)
+                       , activePlayer  = passivePlayer
+                       , passivePlayer = activePlayer
+                       }
+  | otherwise   = Game {board, activePlayer, passivePlayer}
+  where isEmpty = isLocationEmpty board location
+
+
+
+capture :: Game -> Game
+capture Game {board, activePlayer, passivePlayer} =
+  Game { board = removeStonesWithoutLiberties board
+       , activePlayer
+       , passivePlayer
+       }

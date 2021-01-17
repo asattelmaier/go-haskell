@@ -6,7 +6,7 @@ import Data.Char
 import Data.Maybe
 import System.Process
 import System.IO
-import Game                  (Game (Game, board, activePlayer, passivePlayer), createGame, placeStone)
+import Game                  (Game (Game, board, activePlayer, passivePlayer), createGame, play)
 import UserInterface.Command (Command (ExitGame, MoveCursor, PlaceStone), createCommand)
 import UserInterface.Cursor  (Cursor, createCursor, translateCursor)
 import UserInterface.Render  (render, cursorToLocation)
@@ -36,7 +36,7 @@ run game cursor = do
     MoveCursor translation -> run game (translateCursor cursor translation)
     PlaceStone
       | isNothing location -> run game cursor
-      | otherwise          -> run (placeStone game (fromJust location)) cursor
+      | otherwise          -> run (play game (fromJust location)) cursor
       where location = cursorToLocation cursor
 
 

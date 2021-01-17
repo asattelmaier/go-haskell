@@ -6,13 +6,14 @@ cabal run
 
 ## Commands
 
-| Key | Command    |
-|:----|:-----------|
-| Esc | Exit       |
-| k   | Move top   |
-| l   | Move right |
-| j   | Move down  |
-| h   | Move left  |
+| Key | Command     |
+|:----|:------------|
+| Esc | Exit        |
+| f   | Place Stone |
+| k   | Move top    |
+| l   | Move right  |
+| j   | Move down   |
+| h   | Move left   |
 
 
 ## OS Support

@@ -14,6 +14,6 @@ createCommand 'k'    = MoveCursor (Cursor 0 (-1))
 createCommand 'l'    = MoveCursor (Cursor 1 0)
 createCommand 'j'    = MoveCursor (Cursor 0 1)
 createCommand 'h'    = MoveCursor (Cursor (-1) 0)
-createCommand 'g'    = PlaceStone
+createCommand 'f'    = PlaceStone
 createCommand other  = MoveCursor (Cursor 0 0)
 
