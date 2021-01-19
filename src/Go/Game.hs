@@ -48,7 +48,7 @@ playStone Game {board, activePlayer, passivePlayer} location
 
 capture :: Game -> Game
 capture Game {board, activePlayer, passivePlayer} =
-  Game { board = removeStonesWithoutLiberties board
+  Game { board = updatePositions board
        , activePlayer
        , passivePlayer
        }

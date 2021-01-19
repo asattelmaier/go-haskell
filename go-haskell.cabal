@@ -16,6 +16,7 @@ executable go-haskell
   other-modules:
     Go.Game
     Go.Board
+    Go.Intersection
     UserInterface.Command
     UserInterface.Cursor
     UserInterface.Render
