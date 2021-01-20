@@ -7,7 +7,7 @@ module Go.Board
 , createBoard
 , placeStone
 , isLocationEmpty
-, updatePositions
+, removeStonesWithoutLiberty
 ) where
 
 
@@ -22,13 +22,13 @@ type Board = [[Intersection]]
 
 
 createBoard :: Int -> Board
-createBoard lines = (map . map) setInitialState board
+createBoard lines = (map . map) setInitialPosition board
   where board = map (flip zip [0..] . replicate lines) [0..(lines - 1)]
 
 
 
-setInitialState :: (Int, Int) -> Intersection
-setInitialState (x, y) = Intersection (Location x y) Empty
+setInitialPosition :: (Int, Int) -> Intersection
+setInitialPosition (x, y) = Intersection (Location x y) Empty
 
 
 
@@ -49,16 +49,18 @@ isLocationEmpty board (Location x y) = isEmpty (board!!x!!y)
 
 
 
-updatePositions :: Board -> Board
-updatePositions board = (map . map) (updatePosition board) board
+removeStonesWithoutLiberty :: Board -> Color -> Board
+removeStonesWithoutLiberty board color = (map . map) (removeStoneWithoutLiberty board color) board
 
 
 
-updatePosition :: Board -> Intersection -> Intersection
-updatePosition board intersection
+removeStoneWithoutLiberty :: Board -> Color -> Intersection -> Intersection
+removeStoneWithoutLiberty board color intersection
+  | hasDifferentColor               = intersection
   | isEmpty intersection            = intersection
   | hasLiberty board [intersection] = intersection
   | otherwise                       = setEmpty intersection
+  where hasDifferentColor           = hasColor intersection color == False
 
 
 
@@ -90,11 +92,11 @@ hasAnyConnectedAdjacentLiberty board ((Intersection location state):connections)
 
 hasConnectedAdjacentLiberty :: Board -> [Intersection] -> Intersection-> Bool
 hasConnectedAdjacentLiberty board (adjacent:connections) intersection
-          | hasDifferentColor intersection = False
-          | alreadyChecked intersection    = False
-          | otherwise                      = hasLiberty board (intersection:adjacent:connections)
-          where alreadyChecked             = includes (adjacent:connections)
-                hasDifferentColor          = (==) False . hasSameColor adjacent
+  | hasDifferentState intersection = False
+  | alreadyChecked intersection    = False
+  | otherwise                      = hasLiberty board (intersection:adjacent:connections)
+  where alreadyChecked             = includes (adjacent:connections)
+        hasDifferentState          = (==) False . hasSameState adjacent
 
 
 

@@ -20,6 +20,7 @@ executable go-haskell
     UserInterface.Command
     UserInterface.Cursor
     UserInterface.Render
+    UserInterface.UserInput
   build-depends:
     base               >=4.11 && <4.12,
     process            == 1.*

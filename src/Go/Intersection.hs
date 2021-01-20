@@ -5,7 +5,8 @@ module Go.Intersection
 , Intersection (Intersection)
 , isEmpty
 , setEmpty
-, hasSameColor
+, hasSameState
+, hasColor
 , includes
 ) where
 
@@ -33,13 +34,25 @@ setEmpty (Intersection location state) = Intersection location Empty
 
 
 
-getColor :: Intersection -> State
-getColor (Intersection location state) = state
+getState :: Intersection -> State
+getState (Intersection location state) = state
 
 
 
-hasSameColor :: Intersection -> Intersection -> Bool
-hasSameColor intersectionA intersectionB = getColor intersectionA == getColor intersectionB
+hasSameState :: Intersection -> Intersection -> Bool
+hasSameState intersectionA intersectionB = getState intersectionA == getState intersectionB
+
+
+
+getColor :: Intersection -> Color
+getColor (Intersection location (Stone color)) = color
+
+
+
+hasColor :: Intersection -> Color -> Bool
+hasColor intersection color
+  | isEmpty intersection = False
+  | otherwise            = (getColor intersection) == color
 
 
 
