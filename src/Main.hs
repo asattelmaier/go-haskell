@@ -6,8 +6,8 @@ import Data.Char
 import Data.Maybe
 import System.Process
 import System.IO
-import Go.Game                 (Game, createGame, play)
-import UserInterface.Command   (Command (ExitGame, MoveCursor, PlayStone), createCommand)
+import Go.Game                 (Game, createGame, play, pass)
+import UserInterface.Command   (Command (ExitGame, MoveCursor, PlayStone, Pass), createCommand)
 import UserInterface.Cursor    (Cursor, createCursor, translateCursor)
 import UserInterface.Render    (render, cursorToLocation)
 import UserInterface.UserInput (getUserInput)
@@ -35,6 +35,7 @@ run game cursor = do
   case command of
     ExitGame               -> return ()
     MoveCursor translation -> run game $ translateCursor cursor translation
+    Pass                   -> run (pass game) cursor
     PlayStone
       | isNothing location -> run game cursor
       | otherwise          -> run (play game $ fromJust location) cursor

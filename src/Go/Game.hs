@@ -4,6 +4,7 @@ module Go.Game
 ( Game (Game, positions, activePlayer, passivePlayer)
 , createGame
 , play
+, pass
 ) where
 
 
@@ -38,6 +39,12 @@ play game location =
 
 
 
+pass :: Game -> Game
+pass Game {positions, activePlayer, passivePlayer} =
+  alternate Game {positions = head positions:positions, activePlayer, passivePlayer}
+
+
+
 playStone :: Game -> Location -> Game
 playStone Game {positions = lastPreviousPosition:previousPositions, activePlayer, passivePlayer} location
   | isEmpty   = Game { positions = currentPosition:lastPreviousPosition:previousPositions
@@ -51,22 +58,24 @@ playStone Game {positions = lastPreviousPosition:previousPositions, activePlayer
 
 
 capture :: Game -> Game
-capture Game {positions = currentPosition:previousPositions, activePlayer, passivePlayer} =
-  Game { positions = updatedPosition:previousPositions
-       , activePlayer
-       , passivePlayer
-       }
-  where updatedPosition = removeStonesWithoutLiberty currentPosition passivePlayer
+capture Game {positions, activePlayer, passivePlayer} =
+  updatePosition Game {positions, activePlayer, passivePlayer} passivePlayer
 
 
 
 selfCapture :: Game -> Game
-selfCapture Game {positions = currentPosition:previousPositions, activePlayer, passivePlayer} =
+selfCapture Game {positions, activePlayer, passivePlayer} =
+  updatePosition Game {positions, activePlayer, passivePlayer} activePlayer
+
+
+
+updatePosition :: Game -> Player -> Game
+updatePosition Game {positions = currentPosition:previousPositions, activePlayer, passivePlayer} player =
   Game { positions = updatedPosition:previousPositions
        , activePlayer
        , passivePlayer
        }
-  where updatedPosition = removeStonesWithoutLiberty currentPosition activePlayer
+  where updatedPosition = removeStonesWithoutLiberty currentPosition player
 
 
 

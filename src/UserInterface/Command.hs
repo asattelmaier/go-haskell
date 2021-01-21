@@ -1,5 +1,5 @@
 module UserInterface.Command
-( Command (ExitGame, MoveCursor, PlayStone)
+( Command (ExitGame, MoveCursor, PlayStone, Pass)
 , createCommand
 ) where
 
@@ -9,7 +9,7 @@ import UserInterface.Cursor (Cursor (Cursor))
 
 
 
-data Command = ExitGame | MoveCursor Cursor | PlayStone
+data Command = ExitGame | MoveCursor Cursor | PlayStone | Pass
 
 
 
@@ -20,5 +20,6 @@ createCommand 'l'    = MoveCursor (Cursor 1 0)
 createCommand 'j'    = MoveCursor (Cursor 0 1)
 createCommand 'h'    = MoveCursor (Cursor (-1) 0)
 createCommand 'f'    = PlayStone
+createCommand 'g'    = Pass
 createCommand other  = MoveCursor (Cursor 0 0)
 
