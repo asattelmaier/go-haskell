@@ -8,7 +8,7 @@ module UserInterface.Render
 
 
 import Go.Board
-import Go.Game                (Game (Game, board, activePlayer))
+import Go.Game                (Game (Game, positions, activePlayer))
 import UserInterface.Cursor   (Cursor (Cursor))
 
 
@@ -43,9 +43,9 @@ cursorToLocation (Cursor x y)
 
 
 renderCursor :: Game -> Cursor -> String -> String
-renderCursor Game {board} cursor renderedBoard =
+renderCursor Game {positions = currentPosition:lastPositions} cursor renderedBoard =
   replaceChar renderedBoard index cursorRepresentation
-  where index = getCursorLocationIndex cursor board
+  where index = getCursorLocationIndex cursor currentPosition
 
 
 
@@ -56,9 +56,9 @@ getCursorLocationIndex (Cursor x y) board = x + y * (horizontalLines - 1) * 4 + 
 
 
 renderBoard :: Game -> String
-renderBoard Game {board} = removeLastLine $ concatMap renderGrid board
+renderBoard Game {positions} = removeLastLine $ concatMap renderGrid $ head positions
   where removeLastLine      = take $ horizontalLines * horizontalLineWidth * (1 + horizontalGutterSpace) - lastLine
-        horizontalLines     = length board
+        horizontalLines     = length $ head positions
         horizontalLineWidth = (verticalGutterSpace + 1) * (horizontalLines - 1) + 2
         lastLine            = horizontalGutterSpace * horizontalLineWidth
 

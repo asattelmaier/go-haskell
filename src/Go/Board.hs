@@ -20,15 +20,14 @@ import Go.Intersection
 type Board = [[Intersection]]
 
 
-
 createBoard :: Int -> Board
-createBoard lines = (map . map) setInitialPosition board
+createBoard lines = (map . map) addEmptyIntersection board
   where board = map (flip zip [0..] . replicate lines) [0..(lines - 1)]
 
 
 
-setInitialPosition :: (Int, Int) -> Intersection
-setInitialPosition (x, y) = Intersection (Location x y) Empty
+addEmptyIntersection :: (Int, Int) -> Intersection
+addEmptyIntersection (x, y) = Intersection (Location x y) Empty
 
 
 
