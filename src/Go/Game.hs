@@ -2,9 +2,12 @@
 
 module Go.Game
 ( Game (Game, positions, activePlayer, passivePlayer)
+, Player
+, Score
 , createGame
 , play
 , pass
+, end
 ) where
 
 
@@ -12,7 +15,7 @@ module Go.Game
 import Go.Board
 
 
-
+type Score  = Int
 type Player = Color
 data Game   = Game { positions     :: [Board]
                    , activePlayer  :: Player
@@ -28,6 +31,28 @@ createGame lines = Game { positions     = [createBoard lines]
                         }
 
 
+-- TODO: Implement End Game
+end :: Game -> Score
+end game = 100
+
+
+
+pass :: Game -> Maybe Game
+pass Game {positions, activePlayer, passivePlayer}
+  | isConsecutivePass positions = Nothing
+  | otherwise                   = Just $ alternate Game { positions = head positions:positions
+                                                        , activePlayer
+                                                        , passivePlayer
+                                                        }
+
+
+
+isConsecutivePass :: [Board] -> Bool
+isConsecutivePass board
+  | length board < 2 = False
+  | otherwise        = board!!0 == board!!1
+
+
 
 play :: Game -> Location -> Game
 play game location =
@@ -36,12 +61,6 @@ play game location =
   selfCapture .
   capture $
   playStone game location
-
-
-
-pass :: Game -> Game
-pass Game {positions, activePlayer, passivePlayer} =
-  alternate Game {positions = head positions:positions, activePlayer, passivePlayer}
 
 
 

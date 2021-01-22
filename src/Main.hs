@@ -6,7 +6,7 @@ import Data.Char
 import Data.Maybe
 import System.Process
 import System.IO
-import Go.Game                 (Game, createGame, play, pass)
+import Go.Game                 (Game, Score, Player, createGame, play, pass, end)
 import UserInterface.Command   (Command (ExitGame, MoveCursor, PlayStone, Pass), createCommand)
 import UserInterface.Cursor    (Cursor, createCursor, translateCursor)
 import UserInterface.Render    (render, cursorToLocation)
@@ -33,11 +33,17 @@ run game cursor = do
   let command = createCommand userInput
   
   case command of
-    ExitGame               -> return ()
+    ExitGame               -> terminate 0
     MoveCursor translation -> run game $ translateCursor cursor translation
-    Pass                   -> run (pass game) cursor
+    Pass                   -> maybe (terminate $ end game) (flip run cursor) (pass game)
     PlayStone
       | isNothing location -> run game cursor
       | otherwise          -> run (play game $ fromJust location) cursor
       where location = cursorToLocation cursor
 
+
+
+terminate :: Score -> IO ()
+terminate score = do
+  putStrLn $ show score
+  return ()
