@@ -10,6 +10,7 @@ cabal run
 |:----|:------------|
 | Esc | Exit        |
 | f   | Place Stone |
+| g   | Pass        |
 | k   | Move top    |
 | l   | Move right  |
 | j   | Move down   |

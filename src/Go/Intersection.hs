@@ -52,7 +52,7 @@ getColor (Intersection location (Stone color)) = color
 hasColor :: Intersection -> Color -> Bool
 hasColor intersection color
   | isEmpty intersection = False
-  | otherwise            = (getColor intersection) == color
+  | otherwise            = getColor intersection == color
 
 
 

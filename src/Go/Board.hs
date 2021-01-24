@@ -8,6 +8,7 @@ module Go.Board
 , placeStone
 , isLocationEmpty
 , removeStonesWithoutLiberty
+, getTerritory
 ) where
 
 
@@ -22,7 +23,7 @@ type Board = [[Intersection]]
 
 createBoard :: Int -> Board
 createBoard lines = (map . map) addEmptyIntersection board
-  where board = map (flip zip [0..] . replicate lines) [0..(lines - 1)]
+  where board = map (zip [0..] . replicate lines) [0..(lines - 1)]
 
 
 
@@ -44,7 +45,7 @@ updateState locationToUpdate newState (Intersection location state)
 
 
 isLocationEmpty :: Board -> Location -> Bool
-isLocationEmpty board (Location x y) = isEmpty (board!!x!!y)
+isLocationEmpty board (Location x y) = isEmpty (board!!y!!x)
 
 
 
@@ -59,7 +60,7 @@ removeStoneWithoutLiberty board color intersection
   | isEmpty intersection            = intersection
   | hasLiberty board [intersection] = intersection
   | otherwise                       = setEmpty intersection
-  where hasDifferentColor           = hasColor intersection color == False
+  where hasDifferentColor           = not (hasColor intersection color)
 
 
 
@@ -72,20 +73,19 @@ hasLiberty board (intersection:connectedGroup)
 
 
 hasIntersectionLiberty :: Board -> Intersection -> Bool
-hasIntersectionLiberty board (Intersection location state)
+hasIntersectionLiberty board intersection
   | hasAnyEmptyAdjacent     = True
   | otherwise               = False
   where hasAnyEmptyAdjacent = any (maybe False isEmpty) adjacents
-        adjacents           = getAdjacents board location
+        adjacents           = getAdjacents board intersection
 
 
 
 hasAnyConnectedAdjacentLiberty :: Board -> [Intersection] -> Bool
-hasAnyConnectedAdjacentLiberty board ((Intersection location state):connections) =
+hasAnyConnectedAdjacentLiberty board (intersection:connections) =
   any (maybe False $ hasConnectedAdjacentLiberty board connectedGroup) adjacents
   where connectedGroup = intersection:connections
-        intersection   = Intersection location state
-        adjacents      = getAdjacents board location
+        adjacents      = getAdjacents board intersection
 
 
 
@@ -99,8 +99,50 @@ hasConnectedAdjacentLiberty board (adjacent:connections) intersection
 
 
 
-getAdjacents :: Board -> Location -> [Maybe Intersection]
-getAdjacents board location = [top, right, bottom, left]
+getTerritory :: Board -> Color -> [Intersection]
+getTerritory board color = foldr (addTerritory board color) [] (concat board)
+
+
+
+addTerritory :: Board -> Color -> Intersection -> [Intersection] -> [Intersection]
+addTerritory board color intersection territory
+  | isInTerritory        = territory
+  | isEmpty intersection = territory ++ createTerritory board color intersection
+  | otherwise            = territory
+  where isInTerritory    = includes territory intersection
+
+
+
+createTerritory :: Board -> Color -> Intersection -> [Intersection]
+createTerritory board color intersection = fromMaybe [] territory
+  where territory = addAdjacentsToTerritory board color [intersection]
+
+
+
+addAdjacentsToTerritory :: Board -> Color -> [Intersection] -> Maybe [Intersection]
+addAdjacentsToTerritory board color territory =
+  foldr (addAdjacentToTerritory board color) (Just territory) adjacents
+  where adjacents = getAdjacents board (head territory)
+
+
+
+addAdjacentToTerritory :: Board -> Color -> Maybe Intersection -> Maybe [Intersection] -> Maybe [Intersection]
+addAdjacentToTerritory board color maybeAdjacent maybeTerritory
+  | isNothing maybeAdjacent  = maybeTerritory
+  | isNothing maybeTerritory = Nothing
+  | isInTerritory            = maybeTerritory
+  | hasSameColor             = maybeTerritory
+  | isEmpty intersection     = addAdjacentsToTerritory board color (intersection:territory)
+  | otherwise                = Nothing
+  where isInTerritory = includes territory intersection
+        hasSameColor  = hasColor intersection color
+        intersection  = fromJust maybeAdjacent
+        territory     = fromJust maybeTerritory
+
+
+
+getAdjacents :: Board -> Intersection -> [Maybe Intersection]
+getAdjacents board (Intersection location state) = [top, right, bottom, left]
   where top    = getTopAdjacent board location
         right  = getRightAdjacent board location
         bottom = getBottomAdjacent board location
@@ -111,30 +153,29 @@ getAdjacents board location = [top, right, bottom, left]
 getTopAdjacent :: Board -> Location -> Maybe Intersection
 getTopAdjacent board (Location x y)
   | isOutOfField     = Nothing
-  | otherwise        = Just (board!!x!!(y - 1))
-  where isOutOfField = (y - 1) < 0
+  | otherwise        = Just (board!!y!!(x - 1))
+  where isOutOfField = (x - 1) < 0
 
 
 
 getRightAdjacent :: Board -> Location -> Maybe Intersection
 getRightAdjacent board (Location x y)
   | isOutOfField     = Nothing
-  | otherwise        = Just (board!!(x + 1)!!y)
-  where isOutOfField = (x + 1) >= length board
+  | otherwise        = Just (board!!(y + 1)!!x)
+  where isOutOfField = (y + 1) >= length board
 
 
 
 getBottomAdjacent :: Board -> Location -> Maybe Intersection
 getBottomAdjacent board (Location x y)
   | isOutOfField     = Nothing
-  | otherwise        = Just (board!!x!!(y + 1))
-  where isOutOfField = (y + 1) >= length board
+  | otherwise        = Just (board!!y!!(x + 1))
+  where isOutOfField = (x + 1) >= length board
 
 
 
 getLeftAdjacent :: Board -> Location -> Maybe Intersection
 getLeftAdjacent board (Location x y)
   | isOutOfField     = Nothing
-  | otherwise        = Just (board!!(x - 1)!!y)
-  where isOutOfField = (x - 1) < 0
-
+  | otherwise        = Just (board!!(y - 1)!!x)
+  where isOutOfField = (y - 1) < 0

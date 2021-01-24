@@ -32,13 +32,13 @@ render game cursor = renderCursor game cursor $ renderBoard game
 
 cursorToLocation :: Cursor -> Maybe Location
 cursorToLocation (Cursor x y)
-  | isOnPoint = Just (Location positionY positionX)
-  | otherwise = Nothing
-  where positionX  = x `div` (verticalGutterSpace + 1)
-        positionY  = y `div` (horizontalGutterSpace + 1)
-        isOnPoint  = isXOnPoint && isYOnPoint
-        isXOnPoint = x `mod` (verticalGutterSpace + 1) == 0
-        isYOnPoint = y `mod` (horizontalGutterSpace + 1) == 0
+  | isOverIntersection = Just (Location locationX locationY)
+  | otherwise          = Nothing
+  where locationX           = x `div` (verticalGutterSpace + 1)
+        locationY           = y `div` (horizontalGutterSpace + 1)
+        isOverIntersection  = isXOverIntersection && isYOverIntersection
+        isXOverIntersection = x `mod` (verticalGutterSpace + 1) == 0
+        isYOverIntersection = y `mod` (horizontalGutterSpace + 1) == 0
 
 
 

@@ -15,6 +15,7 @@ module Go.Game
 import Go.Board
 
 
+
 type Score  = Int
 type Player = Color
 data Game   = Game { positions     :: [Board]
@@ -33,7 +34,17 @@ createGame lines = Game { positions     = [createBoard lines]
 
 -- TODO: Implement End Game
 end :: Game -> Score
-end game = 100
+end Game {positions, activePlayer, passivePlayer}
+  | activePlayerScore > passivePlayerScore = activePlayerScore
+  | otherwise                              = passivePlayerScore
+  where activePlayerScore  = getTerritoryScore (head positions) activePlayer
+        passivePlayerScore = getTerritoryScore (head positions) passivePlayer
+
+
+
+getTerritoryScore :: Board -> Player -> Score
+getTerritoryScore position player = length territory
+  where territory = getTerritory position player
 
 
 
@@ -50,29 +61,30 @@ pass Game {positions, activePlayer, passivePlayer}
 isConsecutivePass :: [Board] -> Bool
 isConsecutivePass board
   | length board < 2 = False
-  | otherwise        = board!!0 == board!!1
+  | otherwise        = head board == board!!1
 
 
 
 play :: Game -> Location -> Game
-play game location =
-  maybe game alternate .
-  prohibitRepetition .
-  selfCapture .
-  capture $
-  playStone game location
+play game location
+  | isEmpty game location = maybe game alternate .
+                            prohibitRepetition .
+                            selfCapture .
+                            capture $
+                            playStone game location
+  | otherwise             = game
+
+
+
+isEmpty :: Game -> Location -> Bool
+isEmpty Game {positions} = isLocationEmpty (head positions)
 
 
 
 playStone :: Game -> Location -> Game
-playStone Game {positions = lastPreviousPosition:previousPositions, activePlayer, passivePlayer} location
-  | isEmpty   = Game { positions = currentPosition:lastPreviousPosition:previousPositions
-                     , activePlayer
-                     , passivePlayer
-                     }
-  | otherwise = Game { positions = lastPreviousPosition:previousPositions, activePlayer, passivePlayer }
-  where isEmpty         = isLocationEmpty lastPreviousPosition location
-        currentPosition = placeStone lastPreviousPosition location (Stone activePlayer)
+playStone Game {positions = lastPreviousPosition:previousPositions, activePlayer, passivePlayer} location =
+  Game {positions = currentPosition:lastPreviousPosition:previousPositions, activePlayer, passivePlayer}
+  where currentPosition = placeStone lastPreviousPosition location (Stone activePlayer)
 
 
 

@@ -35,7 +35,7 @@ run game cursor = do
   case command of
     ExitGame               -> terminate 0
     MoveCursor translation -> run game $ translateCursor cursor translation
-    Pass                   -> maybe (terminate $ end game) (flip run cursor) (pass game)
+    Pass                   -> maybe (terminate $ end game) (`run` cursor) (pass game)
     PlayStone
       | isNothing location -> run game cursor
       | otherwise          -> run (play game $ fromJust location) cursor
@@ -43,7 +43,8 @@ run game cursor = do
 
 
 
+-- TODO: Render Winner and Score
 terminate :: Score -> IO ()
 terminate score = do
-  putStrLn $ show score
+  print $ show score
   return ()
