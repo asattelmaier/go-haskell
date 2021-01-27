@@ -8,7 +8,7 @@ module Go.Board
 , placeStone
 , isLocationEmpty
 , removeStonesWithoutLiberty
-, getTerritory
+, getArea
 ) where
 
 
@@ -99,6 +99,19 @@ hasConnectedAdjacentLiberty board (adjacent:connections) intersection
 
 
 
+getArea :: Board -> Color -> [Intersection]
+getArea board color = territory ++ occupiedIntersections
+  where territory             = getTerritory board color
+        occupiedIntersections = getOccupiedIntersections board color
+
+
+
+getOccupiedIntersections :: Board -> Color -> [Intersection]
+getOccupiedIntersections board color = filter (isOccupied color) (concat board)
+  where isOccupied = flip hasColor
+
+
+
 getTerritory :: Board -> Color -> [Intersection]
 getTerritory board color = foldr (addTerritory board color) [] (concat board)
 
@@ -106,10 +119,10 @@ getTerritory board color = foldr (addTerritory board color) [] (concat board)
 
 addTerritory :: Board -> Color -> Intersection -> [Intersection] -> [Intersection]
 addTerritory board color intersection territory
-  | isInTerritory        = territory
+  | isPrisoner           = territory
   | isEmpty intersection = territory ++ createTerritory board color intersection
   | otherwise            = territory
-  where isInTerritory    = includes territory intersection
+  where isPrisoner = includes territory intersection
 
 
 
@@ -130,14 +143,14 @@ addAdjacentToTerritory :: Board -> Color -> Maybe Intersection -> Maybe [Interse
 addAdjacentToTerritory board color maybeAdjacent maybeTerritory
   | isNothing maybeAdjacent  = maybeTerritory
   | isNothing maybeTerritory = Nothing
-  | isInTerritory            = maybeTerritory
+  | isPrisoner               = maybeTerritory
   | hasSameColor             = maybeTerritory
   | isEmpty intersection     = addAdjacentsToTerritory board color (intersection:territory)
   | otherwise                = Nothing
-  where isInTerritory = includes territory intersection
-        hasSameColor  = hasColor intersection color
-        intersection  = fromJust maybeAdjacent
-        territory     = fromJust maybeTerritory
+  where isPrisoner   = includes territory intersection
+        hasSameColor = hasColor intersection color
+        intersection = fromJust maybeAdjacent
+        territory    = fromJust maybeTerritory
 
 
 

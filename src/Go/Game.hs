@@ -37,14 +37,14 @@ end :: Game -> Score
 end Game {positions, activePlayer, passivePlayer}
   | activePlayerScore > passivePlayerScore = activePlayerScore
   | otherwise                              = passivePlayerScore
-  where activePlayerScore  = getTerritoryScore (head positions) activePlayer
-        passivePlayerScore = getTerritoryScore (head positions) passivePlayer
+  where activePlayerScore  = getScore (head positions) activePlayer
+        passivePlayerScore = getScore (head positions) passivePlayer
 
 
 
-getTerritoryScore :: Board -> Player -> Score
-getTerritoryScore position player = length territory
-  where territory = getTerritory position player
+getScore :: Board -> Player -> Score
+getScore position player = length area
+  where area = getArea position player
 
 
 
