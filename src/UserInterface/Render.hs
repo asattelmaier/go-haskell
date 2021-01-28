@@ -3,12 +3,13 @@
 module UserInterface.Render
 ( render
 , cursorToLocation
+, renderEndGame
 ) where
 
 
 
 import Go.Board
-import Go.Game                (Game (Game, positions, activePlayer))
+import Go.Game                (Game (Game, positions, activePlayer), Score, Player)
 import UserInterface.Cursor   (Cursor (Cursor))
 
 
@@ -101,6 +102,14 @@ renderIntersection (Intersection location (Stone White)) = whiteStone
 
 
 
+renderEndGame :: ([Player], Score) -> String
+renderEndGame (winners, score)
+  | isDrawn   = renderScore ++ renderDrawn
+  | otherwise = renderScore ++ renderWinner 
+  where isDrawn      = length winners == 2
+        renderScore  = "\n" ++ "Score: " ++ show score
+        renderWinner = "\n" ++ "Winner: " ++ show (head winners) ++ "\n"
+        renderDrawn  = "\n" ++ "Drawn" ++ "\n"
 
 
 -- General Utils

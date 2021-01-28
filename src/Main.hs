@@ -9,7 +9,7 @@ import System.IO
 import Go.Game                 (Game, Score, Player, createGame, play, pass, end)
 import UserInterface.Command   (Command (ExitGame, MoveCursor, PlayStone, Pass), createCommand)
 import UserInterface.Cursor    (Cursor, createCursor, translateCursor)
-import UserInterface.Render    (render, cursorToLocation)
+import UserInterface.Render    (render, cursorToLocation, renderEndGame)
 import UserInterface.UserInput (getUserInput)
 
 
@@ -33,7 +33,7 @@ run game cursor = do
   let command = createCommand userInput
   
   case command of
-    ExitGame               -> terminate 0
+    ExitGame               -> return ()
     MoveCursor translation -> run game $ translateCursor cursor translation
     Pass                   -> maybe (terminate $ end game) (`run` cursor) (pass game)
     PlayStone
@@ -43,8 +43,7 @@ run game cursor = do
 
 
 
--- TODO: Render Winner and Score
-terminate :: Score -> IO ()
-terminate score = do
-  print $ show score
-  return ()
+terminate :: ([Player], Score) -> IO ()
+terminate (winners, score) = do
+  putStr $ renderEndGame (winners, score)
+  return () 

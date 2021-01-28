@@ -32,11 +32,12 @@ createGame lines = Game { positions     = [createBoard lines]
                         }
 
 
--- TODO: Implement End Game
-end :: Game -> Score
+
+end :: Game -> ([Player], Score)
 end Game {positions, activePlayer, passivePlayer}
-  | activePlayerScore > passivePlayerScore = activePlayerScore
-  | otherwise                              = passivePlayerScore
+  | activePlayerScore > passivePlayerScore  = ([activePlayer], activePlayerScore)
+  | activePlayerScore == passivePlayerScore = ([activePlayer, passivePlayer], activePlayerScore)
+  | otherwise                               = ([passivePlayer], passivePlayerScore)
   where activePlayerScore  = getScore (head positions) activePlayer
         passivePlayerScore = getScore (head positions) passivePlayer
 
