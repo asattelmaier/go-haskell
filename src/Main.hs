@@ -3,41 +3,52 @@ module Main where
 
 
 import Data.Maybe
-import System.Process
 import Go.Game                 (Game, Score, Player, createGame, play, pass, end)
-import UserInterface.Command   (Command (ExitGame, MoveCursor, PlayStone, Pass), createCommand)
+import UserInterface.Command   (Command (ExitGame, MoveCursor, PlayStone, Pass))
 import UserInterface.Cursor    (Cursor, createCursor, translateCursor)
-import UserInterface.Render    (render, cursorToLocation, renderEndGame)
-import UserInterface.UserInput (getUserInput)
+import UserInterface.Render    (renderGame, cursorToLocation, renderEndGame, askForGridSize)
+import UserInterface.UserInput (getGridSize, getCommand)
 
 
 
 main :: IO ()
-main = run game cursor
+main = do
+  putStr askForGridSize
+  
+  gridSize <- getGridSize
 
--- TODO: Board should be configurable by the user
-  where game   = createGame 9
+  setup gridSize
+
+
+
+setup :: Int -> IO ()
+setup gridSize = run game cursor
+  where game   = createGame gridSize
         cursor = createCursor
 
 
 
 run :: Game -> Cursor -> IO ()
 run game cursor = do
-  system "clear"
+  putStr $ renderGame game cursor
 
-  putStr $ render game cursor
-  userInput <- getUserInput
-
-  let command = createCommand userInput
+  command <- getCommand
   
   case command of
     ExitGame               -> return ()
+
     MoveCursor translation -> run game $ translateCursor cursor translation
-    Pass                   -> maybe (terminate $ end game) (`run` cursor) (pass game)
+
+    Pass                   -> maybe endGame runGame passGame
+      where passGame = pass game
+            runGame  = flip run cursor
+            endGame  = terminate $ end game
+
     PlayStone
       | isNothing location -> run game cursor
-      | otherwise          -> run (play game $ fromJust location) cursor
-      where location = cursorToLocation cursor
+      | otherwise          -> run playGame cursor
+      where playGame = play game $ fromJust location
+            location = cursorToLocation cursor
 
 
 

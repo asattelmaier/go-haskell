@@ -1,9 +1,10 @@
 {-# LANGUAGE NamedFieldPuns #-}
 
 module UserInterface.Render
-( render
+( renderGame
 , cursorToLocation
 , renderEndGame
+, askForGridSize
 ) where
 
 
@@ -42,8 +43,8 @@ horizontalGutterSpace = 1
 
 
 
-render :: Game -> Cursor -> String
-render game cursor = renderCursor game cursor $ renderBoard game
+renderGame :: Game -> Cursor -> String
+renderGame game cursor = renderCursor game cursor $ renderBoard game
 
 
 
@@ -137,3 +138,7 @@ replaceChar (stringHead:stringTail) index char =
   if index < 0
     then stringHead:stringTail
     else stringHead:replaceChar stringTail (index - 1) char
+
+
+askForGridSize :: String
+askForGridSize = "What grid size do you want to play with?\n"
