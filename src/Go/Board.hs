@@ -22,8 +22,8 @@ type Board = [[Intersection]]
 
 
 createBoard :: Int -> Board
-createBoard lines = (map . map) addEmptyIntersection board
-  where board = map (zip [0..] . replicate lines) [0..(lines - 1)]
+createBoard grid = (map . map) addEmptyIntersection board
+  where board = map (zip [0..] . replicate grid) [0..(grid - 1)]
 
 
 

@@ -9,19 +9,35 @@ module UserInterface.Render
 
 
 import Go.Board
-import Go.Game                (Game (Game, positions, activePlayer), Score, Player)
+import Go.Game                (Game (Game, positions), Score, Player)
 import UserInterface.Cursor   (Cursor (Cursor))
 
 
+cursorRepresentation :: Char
+cursorRepresentation = '█'
 
-cursorRepresentation  = '█'
-empty                 = '+'
-blackStone            = 'X'
-whiteStone            = 'O'
-gutter                = ' '
-horizontalGutter      = '-'
-verticalGutter        = '|'
-verticalGutterSpace   = 3
+empty :: Char
+empty = '+'
+
+blackStone :: Char
+blackStone = 'X'
+
+whiteStone :: Char
+whiteStone = 'O'
+
+gutter :: Char
+gutter = ' '
+
+horizontalGutter :: Char
+horizontalGutter = '-'
+
+verticalGutter :: Char
+verticalGutter = '|'
+
+verticalGutterSpace :: Int
+verticalGutterSpace = 3
+
+horizontalGutterSpace :: Int
 horizontalGutterSpace = 1
 
 

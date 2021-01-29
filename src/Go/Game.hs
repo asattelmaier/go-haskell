@@ -26,10 +26,10 @@ data Game   = Game { positions     :: [Board]
 
 
 createGame :: Int -> Game
-createGame lines = Game { positions     = [createBoard lines]
-                        , activePlayer  = Black
-                        , passivePlayer = White
-                        }
+createGame grid = Game { positions     = [createBoard grid]
+                       , activePlayer  = Black
+                       , passivePlayer = White
+                       }
 
 
 

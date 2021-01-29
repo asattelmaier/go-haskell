@@ -44,15 +44,14 @@ hasSameState intersectionA intersectionB = getState intersectionA == getState in
 
 
 
-getColor :: Intersection -> Color
-getColor (Intersection location (Stone color)) = color
+getColor :: Intersection -> Maybe Color
+getColor (Intersection _ Empty)         = Nothing
+getColor (Intersection _ (Stone color)) = Just color
 
 
 
 hasColor :: Intersection -> Color -> Bool
-hasColor intersection color
-  | isEmpty intersection = False
-  | otherwise            = getColor intersection == color
+hasColor intersection color = maybe False (color ==) $ getColor intersection
 
 
 

@@ -2,10 +2,8 @@ module Main where
 
 
 
-import Data.Char
 import Data.Maybe
 import System.Process
-import System.IO
 import Go.Game                 (Game, Score, Player, createGame, play, pass, end)
 import UserInterface.Command   (Command (ExitGame, MoveCursor, PlayStone, Pass), createCommand)
 import UserInterface.Cursor    (Cursor, createCursor, translateCursor)
