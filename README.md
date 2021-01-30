@@ -1,10 +1,16 @@
 ## Build
 
 ```bash
-cabal run
+cabal build
 ```
 
-## Commands
+## Run CLI Game
+
+```bash
+cabal run -- -m cli
+```
+
+## CLI Commands
 
 | Key | Command     |
 |:----|:------------|
