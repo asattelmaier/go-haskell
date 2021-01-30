@@ -21,7 +21,7 @@ type Player = Color
 data Game   = Game { positions     :: [Board]
                    , activePlayer  :: Player
                    , passivePlayer :: Player
-                   }
+                   } deriving (Show)
 
 
 

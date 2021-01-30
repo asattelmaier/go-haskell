@@ -1,4 +1,4 @@
-module UserInterface.Cursor
+module CLI.Cursor
 ( Cursor (Cursor)
 , translateCursor
 , createCursor

@@ -2,57 +2,42 @@ module Main where
 
 
 
-import Data.Maybe
-import Go.Game                 (Game, Score, Player, createGame, play, pass, end)
-import UserInterface.Command   (Command (ExitGame, MoveCursor, PlayStone, Pass))
-import UserInterface.Cursor    (Cursor, createCursor, translateCursor)
-import UserInterface.Render    (renderGame, cursorToLocation, renderEndGame, askForGridSize)
-import UserInterface.UserInput (getGridSize, getCommand)
+import System.Environment
+import System.Exit
+import qualified CLI as CLI          (main)
+import qualified API.JSON as JSON    (main)
 
 
 
 main :: IO ()
-main = do
-  putStr askForGridSize
-  
-  gridSize <- getGridSize
-
-  setup gridSize
+main = getArgs >>= parse
 
 
 
-setup :: Int -> IO ()
-setup gridSize = run game cursor
-  where game   = createGame gridSize
-        cursor = createCursor
+parse :: [String] -> IO ()
+parse ["-h"]         = usage >> exit
+parse ["-v"]         = version >> exit
+parse ["-m", "cli"]  = CLI.main
+parse ["-m", "json"] = JSON.main
 
 
 
-run :: Game -> Cursor -> IO ()
-run game cursor = do
-  putStr $ renderGame game cursor
-
-  command <- getCommand
-  
-  case command of
-    ExitGame               -> return ()
-
-    MoveCursor translation -> run game $ translateCursor cursor translation
-
-    Pass                   -> maybe endGame runGame passGame
-      where passGame = pass game
-            runGame  = flip run cursor
-            endGame  = terminate $ end game
-
-    PlayStone
-      | isNothing location -> run game cursor
-      | otherwise          -> run playGame cursor
-      where playGame = play game $ fromJust location
-            location = cursorToLocation cursor
+usage :: IO ()
+usage = putStr $
+  "Usage: go-haskell [-vhm]\n\n" ++
+  "Options:\n" ++
+  "  -h    Print this information\n" ++
+  "  -m    Mode\n" ++
+  "        (\"cli\"|\"json\")\n" ++
+  "  -v    Print version information\n"
 
 
 
-terminate :: ([Player], Score) -> IO ()
-terminate (winners, score) = do
-  putStr $ renderEndGame (winners, score)
-  return () 
+version :: IO ()
+version = putStrLn "go-haskell 0.0.0.1"
+
+
+
+exit :: IO ()
+exit = exitWith ExitSuccess
+

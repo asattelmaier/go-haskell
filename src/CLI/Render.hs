@@ -1,6 +1,6 @@
 {-# LANGUAGE NamedFieldPuns #-}
 
-module UserInterface.Render
+module CLI.Render
 ( renderGame
 , cursorToLocation
 , renderEndGame
@@ -10,8 +10,8 @@ module UserInterface.Render
 
 
 import Go.Board
-import Go.Game                (Game (Game, positions), Score, Player)
-import UserInterface.Cursor   (Cursor (Cursor))
+import Go.Game      (Game (Game, positions), Score, Player)
+import CLI.Cursor   (Cursor (Cursor))
 
 
 cursorRepresentation :: Char

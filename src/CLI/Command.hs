@@ -1,11 +1,11 @@
-module UserInterface.Command
+module CLI.Command
 ( Command (ExitGame, MoveCursor, PlayStone, Pass)
 , createCommand
 ) where
 
 
 
-import UserInterface.Cursor (Cursor (Cursor))
+import CLI.Cursor (Cursor (Cursor))
 
 
 

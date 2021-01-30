@@ -1,4 +1,4 @@
-module UserInterface.UserInput
+module CLI.UserInput
 ( getCommand
 , getGridSize
 ) where
@@ -7,7 +7,7 @@ module UserInterface.UserInput
 
 import System.Process
 import System.IO
-import UserInterface.Command (Command, createCommand)
+import CLI.Command (Command, createCommand)
 
 
 

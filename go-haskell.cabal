@@ -17,13 +17,18 @@ executable go-haskell
     Go.Game
     Go.Board
     Go.Intersection
-    UserInterface.Command
-    UserInterface.Cursor
-    UserInterface.Render
-    UserInterface.UserInput
+    CLI
+    CLI.Command
+    CLI.Cursor
+    CLI.Render
+    CLI.UserInput
+    API.JSON
   build-depends:
     base               >=4.11 && <4.12,
-    process            == 1.*
+    process            == 1.*,
+    aeson              == 1.*,
+    bytestring         >= 0.10.4.0 && < 0.12,
+    text               >= 1.2.3.0 && < 1.3
   hs-source-dirs:      src
   default-language:    Haskell2010
   ghc-options:
