@@ -4,8 +4,8 @@ module Main where
 
 import System.Environment
 import System.Exit
-import qualified CLI as CLI          (main)
-import qualified API.JSON as JSON    (main)
+import qualified CLI                 (main)
+import qualified API.JSON            (main)
 
 
 
@@ -18,7 +18,7 @@ parse :: [String] -> IO ()
 parse ["-h"]         = usage >> exit
 parse ["-v"]         = version >> exit
 parse ["-m", "cli"]  = CLI.main
-parse ["-m", "json"] = JSON.main
+parse ["-m", "json"] = API.JSON.main
 
 
 
@@ -39,5 +39,5 @@ version = putStrLn "go-haskell 0.0.0.1"
 
 
 exit :: IO ()
-exit = exitWith ExitSuccess
+exit = exitSuccess
 
