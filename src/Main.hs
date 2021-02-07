@@ -15,16 +15,16 @@ main = getArgs >>= parse
 
 
 parse :: [String] -> IO ()
-parse ["-h"]         = usage >> exit
-parse ["-v"]         = version >> exit
-parse ["-m", "cli"]  = CLI.main
-parse ["-m", "json"] = API.JSON.main
+parse ["-h"]               = usage >> exit
+parse ["-v"]               = version >> exit
+parse ["-m", "cli"]        = CLI.main
+parse ["-m", "json", json] = API.JSON.main json
 
 
 
 usage :: IO ()
 usage = putStr $
-  "Usage: go-haskell [-vhm]\n\n" ++
+  "Usage: go-haskell [-vhm] [json...]\n\n" ++
   "Options:\n" ++
   "  -h    Print this information\n" ++
   "  -m    Mode\n" ++

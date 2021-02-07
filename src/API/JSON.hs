@@ -5,6 +5,9 @@
 module API.JSON (main) where
 
 
+
+import Data.Maybe
+import Control.Applicative
 import Data.Aeson
 import qualified Data.ByteString.Lazy.Char8 as BL
 import Go.Board
@@ -46,9 +49,10 @@ instance ToJSON Location where
 
 
 instance FromJSON Location where
-  parseJSON (Object v) = Location <$>
-    v .: "x" <*>
-    v .: "y"
+  parseJSON (Object v) = Location
+    <$> v .: "x"
+    <*> v .: "y"
+  parseJSON _          = empty
 
 
 
@@ -122,11 +126,12 @@ instance FromJSON Game where
 -- Command
 -------------------------------------------------------------------------------
 
-data Command = PlayStone | Pass deriving (Show)
+data Command = NewGame | PlayStone | Pass deriving (Show)
 
 
 
 instance ToJSON Command where
+  toJSON NewGame   = String "NewGame"
   toJSON PlayStone = String "PlayStone"
   toJSON Pass      = String "Pass"
 
@@ -134,6 +139,7 @@ instance ToJSON Command where
 
 instance FromJSON Command where
   parseJSON command = case command of
+    "NewGame"   -> pure NewGame
     "PlayStone" -> pure PlayStone
     "Pass"      -> pure Pass
     _           -> fail $ "Unknwon Command: " <> show command
@@ -141,37 +147,69 @@ instance FromJSON Command where
 
 
 -------------------------------------------------------------------------------
--- Play
+-- PlayData
 -------------------------------------------------------------------------------
 
-data Play = Play { game :: Game
-                 , command :: Command
-                 } deriving (Show)
+data PlayData = PlayData { game :: Game
+                         , command :: Command
+                         , location :: Maybe Location
+                         } deriving (Show)
 
 
 
-instance ToJSON Play where
-  toJSON (Play game command) =
-    object [ "game"    .= game,
-             "command" .= command ]
+instance ToJSON PlayData where
+  toJSON (PlayData game command location) =
+    object [ "game"     .= game,
+             "command"  .= command,
+             "location" .= location ]
 
-  toEncoding Play{..} = pairs $
-    "game"    .= game <>
-    "command" .= command
+  toEncoding PlayData{..} = pairs $
+    "game"     .= game <>
+    "command"  .= command <>
+    "location" .= location
 
 
 
-instance FromJSON Play where
-  parseJSON (Object v) = Play
+instance FromJSON PlayData where
+  parseJSON (Object v) = PlayData
     <$> v .: "game"
     <*> v .: "command"
-
-
-
-main :: IO ()
-main = do
-  -- TODO: Just a test, add implementation
-  print (decode "{\"game\":{\"positions\":[[[{\"location\": {\"x\": 2, \"y\": 1}, \"state\": \"Black\"}]]],\"activePlayer\": \"Black\",\"passivePlayer\":\"White\"},\"command\":\"Pass\"}" :: Maybe Play)
+    <*> v .:? "location"
   
-  BL.putStrLn (encode (Play (createGame 2) PlayStone))
 
+
+
+main :: String -> IO ()
+main jsonData = do
+  let playData = decode (BL.pack jsonData) :: Maybe PlayData
+
+  maybe (response playData) handlePlayData playData
+
+
+
+handlePlayData :: PlayData -> IO ()
+handlePlayData PlayData {..} =
+
+  
+  case command of
+    NewGame   -> response $ Just $ PlayData (createGame 19) command location
+
+   
+    Pass      -> maybe (responseScore endGame) responseGame passGame
+      where responseGame = \updatedGame -> response $ Just $ PlayData updatedGame command location
+            passGame     = pass game
+            endGame      = end game
+    
+
+    PlayStone -> response $ Just $ PlayData (play game (fromJust location)) command location
+
+
+
+response :: Maybe PlayData -> IO ()
+response playData = BL.putStrLn (maybe BL.empty encode playData)
+
+
+
+-- TODO: Add implementation for response Score
+responseScore :: ([Color], Score) -> IO ()
+responseScore score = BL.putStrLn (encode score)
