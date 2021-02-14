@@ -7,7 +7,7 @@ add_definitions("-std=c++11")
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
-add_executable(tests tests.cpp)
+add_executable(tests tests.cpp utils/go_json_api.cpp utils/go_json_api.h)
 target_link_libraries(tests ${CONAN_LIBS})
 
 add_test(NAME tests WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin COMMAND tests)
