@@ -15,8 +15,7 @@ using json = nlohmann::json;
 
 TEST(Tests, Rule1){
   list<string> expectedPlayers = {"Black", "White"};
-  // TODO: Remove game from NewGame json.
-  json newGame = json::parse("{ \"game\": { \"positions\": [[]], \"activePlayer\": \"Black\", \"passivePlayer\": \"White\" }, \"command\": \"NewGame\" }");
+  json newGame = json::object({ {"command", "NewGame"} });
   
   json game = play(newGame)["game"];
   list<string> actualPlayers = {game["activePlayer"].get<string>(), game["passivePlayer"].get<string>()};

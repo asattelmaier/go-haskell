@@ -150,7 +150,7 @@ instance FromJSON Command where
 -- PlayData
 -------------------------------------------------------------------------------
 
-data PlayData = PlayData { game :: Game
+data PlayData = PlayData { game :: Maybe Game
                          , command :: Command
                          , location :: Maybe Location
                          } deriving (Show)
@@ -172,8 +172,8 @@ instance ToJSON PlayData where
 
 instance FromJSON PlayData where
   parseJSON (Object v) = PlayData
-    <$> v .: "game"
-    <*> v .: "command"
+    <$> v .:? "game"
+    <*> v .:  "command"
     <*> v .:? "location"
   
 
@@ -192,16 +192,18 @@ handlePlayData PlayData {..} =
 
   
   case command of
-    NewGame   -> response $ Just $ PlayData (createGame 19) command location
+    NewGame   -> response $ Just $ PlayData newGame command location
+      where newGame = Just $ createGame 19
 
    
     Pass      -> maybe (responseScore endGame) responseGame passGame
       where responseGame = \updatedGame -> response $ Just $ PlayData updatedGame command location
-            passGame     = pass game
-            endGame      = end game
+            passGame     = Just $ pass (fromJust game)
+            endGame      = end (fromJust game)
     
 
-    PlayStone -> response $ Just $ PlayData (play game (fromJust location)) command location
+    PlayStone -> response $ Just $ PlayData playGame command location
+      where playGame = Just $ play (fromJust game) (fromJust location)
 
 
 
