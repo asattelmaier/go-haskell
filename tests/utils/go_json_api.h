@@ -20,6 +20,7 @@ using json = nlohmann::json;
 
 
 json play(json game);
+bool has_state(json board, string state);
 
 
 
