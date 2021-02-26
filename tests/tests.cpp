@@ -168,7 +168,7 @@ TEST(Tests, Rule7Step1Occupied) {
 //   Removing from the board any stones of their opponent's color that have no liberties.
 
 TEST(Tests, Rule7Step2BlackCapture) {
-  json createNewGame = json::object({ {"command", "NewGame"} });
+  json createNewGame = json::object({ {"command", "NewGame"}, {"size", 5} });
   json newGame = play(createNewGame);
 
   /*
@@ -219,7 +219,7 @@ TEST(Tests, Rule7Step2BlackCapture) {
 }
 
 TEST(Tests, Rule7Step2EdgeCapture) {
-  json createNewGame = json::object({ {"command", "NewGame"} });
+  json createNewGame = json::object({ {"command", "NewGame"}, {"size", 5} });
   json newGame = play(createNewGame);
 
   /*
@@ -269,7 +269,7 @@ TEST(Tests, Rule7Step2EdgeCapture) {
 }
 
 TEST(Tests, Rule7Step2WhiteCapture) {
-  json createNewGame = json::object({ {"command", "NewGame"} });
+  json createNewGame = json::object({ {"command", "NewGame"}, {"size", 5} });
   json newGame = play(createNewGame);
 
   /*
@@ -334,7 +334,7 @@ TEST(Tests, Rule7Step2WhiteCapture) {
 }
 
 TEST(Tests, Rule7Step2WhiteCapturedBeforeBlack) {
-  json createNewGame = json::object({ {"command", "NewGame"} });
+  json createNewGame = json::object({ {"command", "NewGame"}, {"size", 5} });
   json newGame = play(createNewGame);
 
   /*
@@ -349,7 +349,6 @@ TEST(Tests, Rule7Step2WhiteCapturedBeforeBlack) {
    *  +--+--X--O--+
    */
 
-  // TODO: Add API for adjusting board size
   newGame["game"]["positions"][0][2][3]["state"] = "Black";
   newGame["game"]["positions"][0][2][4]["state"] = "Black";
   newGame["game"]["positions"][0][3][2]["state"] = "Black";
