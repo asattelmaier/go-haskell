@@ -26,10 +26,10 @@ string replace(string const & in, string const & from, string const & to) {
 
 
 
-json play(json game) {
+json go(json payload) {
   string base = "cd ../../../ && cabal -v0 run -- -m json ";
-  string escapedGame = '"' + replace(game.dump(), "\"", "\\\"") + '"';
-  string command = base.append(escapedGame);
+  string escapedPayload = '"' + replace(payload.dump(), "\"", "\\\"") + '"';
+  string command = base.append(escapedPayload);
   
   string result = exec(command.c_str());
 
