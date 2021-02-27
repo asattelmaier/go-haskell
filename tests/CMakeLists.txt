@@ -27,3 +27,4 @@ add_executable(
 target_link_libraries(test_go_json_api ${CONAN_LIBS})
 
 add_test(NAME test_go_json_api WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin COMMAND test_go_json_api)
+
