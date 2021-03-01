@@ -23,6 +23,19 @@ executable go-haskell
     CLI.Render
     CLI.UserInput
     API.JSON
+    API.JSON.Input.DTO
+    API.JSON.Input.Command
+    API.JSON.Input.Game
+    API.JSON.Input.Intersection
+    API.JSON.Input.Location
+    API.JSON.Input.State
+    API.JSON.Input.Color
+    API.JSON.Output.DTO
+    API.JSON.Output.Game
+    API.JSON.Output.Intersection
+    API.JSON.Output.Location
+    API.JSON.Output.State
+    API.JSON.Output.Color
   build-depends:
     base               >=4.11 && <4.12,
     process            == 1.*,
