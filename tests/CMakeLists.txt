@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.12)
-project(GoHaskellTest)
+project(GoHaskellJsonApiTest)
 enable_testing()
 
 add_definitions("-std=c++11")
@@ -8,9 +8,9 @@ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
 add_executable(
-  test_go_json_api
+  go_haskell_json_api_test
 
-  go_json_api_test.cpp
+  go_haskell_json_api_test.cpp
 
   rules/rule1_test.cpp
   rules/rule2_test.cpp
@@ -21,11 +21,13 @@ add_executable(
   rules/rule7_test.cpp
   rules/rule8_test.cpp
 
-  utils/go_json_api.cpp
-  utils/go_json_api.h
+  utils/json_api.cpp
+  utils/json_api.h
+  utils/board.cpp
+  utils/board.h
 )
 
-target_link_libraries(test_go_json_api ${CONAN_LIBS})
+target_link_libraries(go_haskell_json_api_test ${CONAN_LIBS})
 
-add_test(NAME test_go_json_api WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin COMMAND test_go_json_api)
+add_test(NAME go_haskell_json_api_test WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin COMMAND go_haskell_json_api_test)
 

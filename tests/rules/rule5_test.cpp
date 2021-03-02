@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
-#include "../utils/go_json_api.h"
+#include "../utils/json_api.h"
+#include "../utils/board.h"
 
 
 
@@ -19,8 +20,8 @@ using json = nlohmann::json;
 TEST(Rule5, InitialPosition) {
   json createNewGame = json::object({ {"command", "NewGame"} });
   
-  json board = go(createNewGame)["game"]["positions"].front();
-  bool isBoardEmpty = !has_state(board, "Black") && !has_state(board, "White");
+  json board = json_api::execute(createNewGame)["game"]["positions"].front();
+  bool isBoardEmpty = !board::has_state(board, "Black") && !board::has_state(board, "White");
 
   ASSERT_TRUE(isBoardEmpty);
 }

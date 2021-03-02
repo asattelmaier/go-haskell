@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
-#include "../utils/go_json_api.h"
+#include "../utils/json_api.h"
 
 
 
@@ -23,25 +23,25 @@ using json = nlohmann::json;
 
 TEST(Rule7, PlaceStoneOnEmptyIntersection) {
   json createNewGame = json::object({ {"command", "NewGame"} });
-  json goData = go(createNewGame);
+  json goData = json_api::execute(createNewGame);
 
   goData["location"] = json::object({ {"x", 0}, {"y", 0} });
   goData["command"] = "PlayStone";
-  json interception = go(goData)["game"]["positions"].front().front().front();
+  json interception = json_api::execute(goData)["game"]["positions"].front().front().front();
 
   ASSERT_EQ(interception["state"], "Black");
 }
 
 TEST(Rule7, PlaceStoneOnOccupiedIntersection) {
   json createNewGame = json::object({ {"command", "NewGame"} });
-  json goData = go(createNewGame);
+  json goData = json_api::execute(createNewGame);
 
   goData["location"] = json::object({ {"x", 0}, {"y", 0} });
   goData["command"] = "PlayStone";
-  json playedGame = go(goData);
+  json playedGame = json_api::execute(goData);
   playedGame["location"] = json::object({ {"x", 0}, {"y", 0} });
   playedGame["command"] = "PlayStone";
-  json game = go(playedGame)["game"];
+  json game = json_api::execute(playedGame)["game"];
   json interception = game["positions"].front().front().front();
   bool hasAlternated = game["activePlayer"] == "Black";
 
@@ -55,7 +55,7 @@ TEST(Rule7, PlaceStoneOnOccupiedIntersection) {
 
 TEST(Rule7, CaptureWhiteStones) {
   json createNewGame = json::object({ {"command", "NewGame"}, {"size", 5} });
-  json goData = go(createNewGame);
+  json goData = json_api::execute(createNewGame);
 
   /*
    *  +--+--+--+--+
@@ -101,12 +101,12 @@ TEST(Rule7, CaptureWhiteStones) {
    *  +--+--+--+--+
    */
   
-  ASSERT_EQ(go(goData)["game"]["positions"][0][2][2]["state"], "Empty");
+  ASSERT_EQ(json_api::execute(goData)["game"]["positions"][0][2][2]["state"], "Empty");
 }
 
 TEST(Rule7, CaptureOnEdge) {
   json createNewGame = json::object({ {"command", "NewGame"}, {"size", 5} });
-  json goData = go(createNewGame);
+  json goData = json_api::execute(createNewGame);
 
   /*
    *  +--+--+--+--+
@@ -151,12 +151,12 @@ TEST(Rule7, CaptureOnEdge) {
    *  +--+--+--+--+
    */
   
-  ASSERT_EQ(go(goData)["game"]["positions"][0][2][0]["state"], "Empty");
+  ASSERT_EQ(json_api::execute(goData)["game"]["positions"][0][2][0]["state"], "Empty");
 }
 
 TEST(Rule7, CaptureBlackStones) {
   json createNewGame = json::object({ {"command", "NewGame"}, {"size", 5} });
-  json goData = go(createNewGame);
+  json goData = json_api::execute(createNewGame);
 
   /*
    *  +--O--+--+--+
@@ -211,7 +211,7 @@ TEST(Rule7, CaptureBlackStones) {
    *  +--+--O--+--+
    */
 
-  json afterRemoval = go(goData)["game"]["positions"][0];
+  json afterRemoval = json_api::execute(goData)["game"]["positions"][0];
 
   ASSERT_EQ(afterRemoval[1][1]["state"], "Empty");
   ASSERT_EQ(afterRemoval[2][1]["state"], "Empty");
@@ -221,7 +221,7 @@ TEST(Rule7, CaptureBlackStones) {
 
 TEST(Rule7, CapturePassivePlayerBeforeActivePlayer) {
   json createNewGame = json::object({ {"command", "NewGame"}, {"size", 5} });
-  json goData = go(createNewGame);
+  json goData = json_api::execute(createNewGame);
 
   /*
    *  +--+--+--+--+
@@ -270,7 +270,7 @@ TEST(Rule7, CapturePassivePlayerBeforeActivePlayer) {
    *  +--+--X--+--X
    */
 
-  json afterRemoval = go(goData)["game"]["positions"][0];
+  json afterRemoval = json_api::execute(goData)["game"]["positions"][0];
 
   ASSERT_EQ(afterRemoval[3][3]["state"], "Empty");
   ASSERT_EQ(afterRemoval[3][4]["state"], "Empty");
@@ -279,7 +279,7 @@ TEST(Rule7, CapturePassivePlayerBeforeActivePlayer) {
 
 TEST(Rule7, CaptureAfterCapture) {
   json createNewGame = json::object({ {"command", "NewGame"}, {"size", 5} });
-  json goData = go(createNewGame);
+  json goData = json_api::execute(createNewGame);
 
   /*
    *  +--+--+--+--+
@@ -327,7 +327,7 @@ TEST(Rule7, CaptureAfterCapture) {
    *  +--X--+--+--X
    */
 
-  json afterFirstCapture = go(goData);
+  json afterFirstCapture = json_api::execute(goData);
 
   /*
    *  +--+--+--+--+
@@ -356,7 +356,7 @@ TEST(Rule7, CaptureAfterCapture) {
    *  +--X--+--O--+
    */
 
-  json afterSecondCapture = go(afterFirstCapture)["game"]["positions"][0];
+  json afterSecondCapture = json_api::execute(afterFirstCapture)["game"]["positions"][0];
 
   ASSERT_EQ(afterSecondCapture[4][2]["state"], "Empty");
   ASSERT_EQ(afterSecondCapture[4][3]["state"], "White");
@@ -365,7 +365,7 @@ TEST(Rule7, CaptureAfterCapture) {
 
 TEST(Rule7, CaptureMultipleChains) {
   json createNewGame = json::object({ {"command", "NewGame"}, {"size", 5} });
-  json goData = go(createNewGame);
+  json goData = json_api::execute(createNewGame);
 
   /*
    *  +--+--+--+--+
@@ -425,7 +425,7 @@ TEST(Rule7, CaptureMultipleChains) {
    *  +--+--O--O--+
    */
 
-  json afterCapture = go(goData)["game"]["positions"][0];
+  json afterCapture = json_api::execute(goData)["game"]["positions"][0];
 
   ASSERT_EQ(afterCapture[2][1]["state"], "Empty");
   ASSERT_EQ(afterCapture[2][3]["state"], "Empty");
@@ -442,7 +442,7 @@ TEST(Rule7, CaptureMultipleChains) {
 
 TEST(Rule7, ShouldNotSelfCapture) {
   json createNewGame = json::object({ {"command", "NewGame"}, {"size", 5} });
-  json goData = go(createNewGame);
+  json goData = json_api::execute(createNewGame);
 
   /*
    *  +--+--+--+--+
@@ -498,7 +498,7 @@ TEST(Rule7, ShouldNotSelfCapture) {
    *  X--+--X--X--X
    */
 
-  json afterCapture = go(goData)["game"]["positions"][0];
+  json afterCapture = json_api::execute(goData)["game"]["positions"][0];
 
   ASSERT_EQ(afterCapture[3][1]["state"], "Empty");
   ASSERT_EQ(afterCapture[3][2]["state"], "Empty");
@@ -510,7 +510,7 @@ TEST(Rule7, ShouldNotSelfCapture) {
 
 TEST(Rule7, ShouldSelfCaptureStone) {
   json createNewGame = json::object({ {"command", "NewGame"}, {"size", 5} });
-  json goData = go(createNewGame);
+  json goData = json_api::execute(createNewGame);
 
   /*
    *  +--+--+--+--+
@@ -555,14 +555,14 @@ TEST(Rule7, ShouldSelfCaptureStone) {
    *  +--O--+--+--+
    */
 
-  json afterCapture = go(goData)["game"]["positions"][0];
+  json afterCapture = json_api::execute(goData)["game"]["positions"][0];
 
   ASSERT_EQ(afterCapture[4][0]["state"], "Empty");
 }
 
 TEST(Rule7, ShouldSelfCaptureChain) {
   json createNewGame = json::object({ {"command", "NewGame"}, {"size", 5} });
-  json goData = go(createNewGame);
+  json goData = json_api::execute(createNewGame);
 
   /*
    *  +--+--+--+--+
@@ -613,7 +613,7 @@ TEST(Rule7, ShouldSelfCaptureChain) {
    *  +--+--O--+--+
    */
 
-  json afterCapture = go(goData)["game"]["positions"][0];
+  json afterCapture = json_api::execute(goData)["game"]["positions"][0];
 
   ASSERT_EQ(afterCapture[3][2]["state"], "Empty");
   ASSERT_EQ(afterCapture[3][3]["state"], "Empty");

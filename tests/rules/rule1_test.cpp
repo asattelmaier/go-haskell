@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
-#include "../utils/go_json_api.h"
+#include "../utils/json_api.h"
 
 
 
@@ -19,7 +19,7 @@ using json = nlohmann::json;
 TEST(Rule1, GameBetweenBlackAndWhite) {
   json createNewGame = json::object({ {"command", "NewGame"} });
   
-  json game = go(createNewGame)["game"];
+  json game = json_api::execute(createNewGame)["game"];
 
   ASSERT_EQ(game["activePlayer"].get<string>(),"Black");
   ASSERT_EQ(game["passivePlayer"].get<string>(), "White");

@@ -9,7 +9,7 @@ maintainer:          alexander@sattelmaier.info
 category:            Game
 build-type:          Simple
 extra-source-files:  ChangeLog.md, README.md
-cabal-version:       >=1.10
+cabal-version:       >= 1.10
 
 executable go-haskell
   main-is:             Main.hs
@@ -37,7 +37,7 @@ executable go-haskell
     API.JSON.Output.State
     API.JSON.Output.Color
   build-depends:
-    base               >=4.11 && <4.12,
+    base               >= 4.11 && <4.12,
     process            == 1.*,
     aeson              == 1.*,
     bytestring         >= 0.10.4.0 && < 0.12,

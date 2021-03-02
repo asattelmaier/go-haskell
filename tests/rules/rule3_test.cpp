@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
-#include "../utils/go_json_api.h"
+#include "../utils/json_api.h"
 
 
 
@@ -18,10 +18,10 @@ using json = nlohmann::json;
 
 TEST(Rule3, PlayedWithStones) {
   json createNewGame = json::object({ {"command", "NewGame"} });
-  json goData = go(createNewGame);
+  json goData = json_api::execute(createNewGame);
 
   goData["location"] = json::object({ {"x", 0}, {"y", 0} });
   goData["command"] = "PlayStone";
 
-  ASSERT_EQ(go(goData)["command"], "PlayStone");
+  ASSERT_EQ(json_api::execute(goData)["command"], "PlayStone");
 }

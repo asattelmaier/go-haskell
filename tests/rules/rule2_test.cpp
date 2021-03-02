@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
-#include "../utils/go_json_api.h"
+#include "../utils/json_api.h"
 
 
 
@@ -19,7 +19,7 @@ using json = nlohmann::json;
 TEST(Rule2, BoardSize) {
   json createNewGame = json::object({ {"command", "NewGame"} });
   
-  json board = go(createNewGame)["game"]["positions"].front();
+  json board = json_api::execute(createNewGame)["game"]["positions"].front();
 
   ASSERT_EQ(board.size(), 19);
   ASSERT_EQ(board.front().size(), 19);

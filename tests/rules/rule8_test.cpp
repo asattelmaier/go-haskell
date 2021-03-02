@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
-#include "../utils/go_json_api.h"
+#include "../utils/json_api.h"
 
 
 
@@ -19,7 +19,7 @@ using json = nlohmann::json;
 
 TEST(Rule8, ProhibitionOfRepetition) {
   json createNewGame = json::object({ {"command", "NewGame"}, {"size", 5} });
-  json goData = go(createNewGame);
+  json goData = json_api::execute(createNewGame);
 
   /*
    *  +--X--O--+--+
@@ -56,7 +56,7 @@ TEST(Rule8, ProhibitionOfRepetition) {
   goData["game"]["activePlayer"] = "White";
   goData["game"]["passivePlayer"] = "Black";
   goData["command"] = "PlayStone";
-  json whitePlayed = go(goData);
+  json whitePlayed = json_api::execute(goData);
   
   /*
    *  +--X--O--+--+
@@ -72,7 +72,7 @@ TEST(Rule8, ProhibitionOfRepetition) {
 
   whitePlayed["location"] = json::object({ {"x", 2}, {"y", 1} });
   whitePlayed["command"] = "PlayStone";
-  json blackPlayed = go(whitePlayed);
+  json blackPlayed = json_api::execute(whitePlayed);
 
   /*
    *  +--X--O--+--+
@@ -101,7 +101,7 @@ TEST(Rule8, ProhibitionOfRepetition) {
    *  +--+--+--+--+
    */
  
-  json illegalRecapture = go(blackPlayed)["game"];
+  json illegalRecapture = json_api::execute(blackPlayed)["game"];
 
   
   ASSERT_EQ(illegalRecapture["positions"][0][1][1]["state"], "Empty");
@@ -111,7 +111,7 @@ TEST(Rule8, ProhibitionOfRepetition) {
 
 TEST(Rule8, LegalRecapture) {
   json createNewGame = json::object({ {"command", "NewGame"}, {"size", 5} });
-  json goData = go(createNewGame);
+  json goData = json_api::execute(createNewGame);
 
   /*
    *  +--+--+--+--+
@@ -149,7 +149,7 @@ TEST(Rule8, LegalRecapture) {
   goData["game"]["activePlayer"] = "White";
   goData["game"]["passivePlayer"] = "Black";
   goData["command"] = "PlayStone";
-  json whitePlayed = go(goData);
+  json whitePlayed = json_api::execute(goData);
   
   /*
    *  +--+--+--+--+
@@ -165,7 +165,7 @@ TEST(Rule8, LegalRecapture) {
 
   whitePlayed["location"] = json::object({ {"x", 0}, {"y", 2} });
   whitePlayed["command"] = "PlayStone";
-  json blackPlayed = go(whitePlayed);
+  json blackPlayed = json_api::execute(whitePlayed);
 
   /*
    *  +--+--+--+--+
@@ -181,7 +181,7 @@ TEST(Rule8, LegalRecapture) {
 
   blackPlayed["location"] = json::object({ {"x", 0}, {"y", 3} });
   blackPlayed["command"] = "PlayStone";
-  json legalRecapture = go(blackPlayed)["game"];
+  json legalRecapture = json_api::execute(blackPlayed)["game"];
 
 
   ASSERT_EQ(legalRecapture["positions"][0][2][0]["state"], "Empty");

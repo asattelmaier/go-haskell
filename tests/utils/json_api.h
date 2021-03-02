@@ -1,10 +1,9 @@
-#ifndef GO_JSON_API_H_
-#define GO_JSON_API_H_ 
+#ifndef JSON_API_H_
+#define JSON_API_H_ 
 
 
 
 #include <cstdio>
-#include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -19,8 +18,9 @@ using json = nlohmann::json;
 
 
 
-json go(json payload);
-bool has_state(json board, string state);
+namespace json_api {
+  json execute(json payload);
+}
 
 
 
