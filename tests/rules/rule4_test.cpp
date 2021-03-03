@@ -20,9 +20,9 @@ using json = nlohmann::json;
 
 TEST(Rule4, EmptyIntersection) {
   json createNewGame = json::object({ {"command", "NewGame"} });
-  json goData = json_api::execute(createNewGame);
+  json game = json_api::execute(createNewGame);
 
-  json interception = goData["game"]["positions"].front().front().front();
+  json interception = game["positions"].front().front().front();
 
   ASSERT_EQ(interception["state"], "Empty");
 }
@@ -32,11 +32,11 @@ TEST(Rule4, EmptyIntersection) {
 
 TEST(Rule4, OccupiedByBlack) {
   json createNewGame = json::object({ {"command", "NewGame"} });
-  json goData = json_api::execute(createNewGame);
+  json goData = json::object({ {"game", json_api::execute(createNewGame)} });
 
   goData["location"] = json::object({ {"x", 0}, {"y", 0} });
   goData["command"] = "PlayStone";
-  json interception = json_api::execute(goData)["game"]["positions"].front().front().front();
+  json interception = json_api::execute(goData)["positions"].front().front().front();
 
   ASSERT_EQ(interception["state"], "Black");
 }
@@ -46,14 +46,14 @@ TEST(Rule4, OccupiedByBlack) {
 
 TEST(Rule4, OccupiedByWhite) {
   json createNewGame = json::object({ {"command", "NewGame"} });
-  json goData = json_api::execute(createNewGame);
+  json goData = json::object({ {"game", json_api::execute(createNewGame)} });
 
   goData["location"] = json::object({ {"x", 0}, {"y", 0} });
   goData["command"] = "PlayStone";
-  json played = json_api::execute(goData);
-  played["location"] = json::object({ {"x", 1}, {"y", 0} });
-  played["command"] = "PlayStone";
-  json interception = json_api::execute(played)["game"]["positions"].front().front()[1];
+  goData["game"] = json_api::execute(goData);
+  goData["location"] = json::object({ {"x", 1}, {"y", 0} });
+  goData["command"] = "PlayStone";
+  json interception = json_api::execute(goData)["positions"].front().front()[1];
 
   ASSERT_EQ(interception["state"], "White");
 }

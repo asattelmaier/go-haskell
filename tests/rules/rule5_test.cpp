@@ -19,8 +19,9 @@ using json = nlohmann::json;
 
 TEST(Rule5, InitialPosition) {
   json createNewGame = json::object({ {"command", "NewGame"} });
+  json goData = json::object({ {"game", json_api::execute(createNewGame)} });
   
-  json board = json_api::execute(createNewGame)["game"]["positions"].front();
+  json board = goData["game"]["positions"].front();
   bool isBoardEmpty = !board::has_state(board, "Black") && !board::has_state(board, "White");
 
   ASSERT_TRUE(isBoardEmpty);

@@ -18,10 +18,12 @@ using json = nlohmann::json;
 
 TEST(Rule3, PlayedWithStones) {
   json createNewGame = json::object({ {"command", "NewGame"} });
-  json goData = json_api::execute(createNewGame);
+  json goData = json::object({ {"game", json_api::execute(createNewGame)} });
 
   goData["location"] = json::object({ {"x", 0}, {"y", 0} });
   goData["command"] = "PlayStone";
+  bool hasStonePlayed = json_api::execute(goData)["positions"][0][0][0]["state"] == "Black";
 
-  ASSERT_EQ(json_api::execute(goData)["command"], "PlayStone");
+  ASSERT_TRUE(hasStonePlayed);
 }
+

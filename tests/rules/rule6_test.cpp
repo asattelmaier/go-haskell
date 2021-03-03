@@ -18,11 +18,11 @@ using json = nlohmann::json;
 
 TEST(Rule6, Alternate) {
   json createNewGame = json::object({ {"command", "NewGame"} });
-  json goData = json_api::execute(createNewGame);
+  json goData = json::object({ {"game", json_api::execute(createNewGame)} });
 
   string firstPlayer = goData["game"]["activePlayer"];
   goData["command"] = "Pass";
-  string secondPlayer = json_api::execute(goData)["game"]["activePlayer"];
+  string secondPlayer = json_api::execute(goData)["activePlayer"];
   bool hasAlternated = firstPlayer == "Black" && secondPlayer == "White";
 
   ASSERT_TRUE(hasAlternated);

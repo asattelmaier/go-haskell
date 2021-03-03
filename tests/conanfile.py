@@ -55,6 +55,7 @@ class GoHaskellJsonApiTest(ConanFile):
         self.copy("*.dylib", "bin", "lib")
 
     def test(self):
+        # TODO: Pass arguments to gTest for filtering test like --gtest_filter=Rule3*
         command = "cd bin && %s.%s%s" % (self.get_formatted_environment_variables(), os.sep, self.test_app_name)
         self.run(command)
 

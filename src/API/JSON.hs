@@ -20,6 +20,10 @@ import Go.Game
 
 
 
+defaultGridSize = 19
+
+
+
 main :: String -> IO ()
 main jsonString = do
   let inputDTO = decode (BL.pack jsonString) :: Maybe Input.DTO
@@ -33,26 +37,27 @@ handleInputDTO Input.DTO {..} =
 
   
   case command of
-    NewGame   -> response $ Just $ Output.DTO newGame command location size
-      where newGame = Just $ createGame $ fromMaybe 19 size
+    NewGame   -> response $ Output.DTO newGame
+      where newGame = createGame $ fromMaybe defaultGridSize size
 
    
     Pass      -> maybe (responseScore endGame) responseGame passGame
-      where responseGame updatedGame = response $ Just $ Output.DTO updatedGame command location size
-            passGame     = Just $ pass (fromJust game)
+      where responseGame updatedGame = response $ Output.DTO updatedGame
+            passGame     = pass (fromJust game)
             endGame      = end (fromJust game)
     
 
-    PlayStone -> response $ Just $ Output.DTO playGame command location size
-      where playGame = Just $ play (fromJust game) (fromJust location)
+    PlayStone -> response $ Output.DTO playGame
+      where playGame = play (fromJust game) (fromJust location)
 
 
 
-response :: Maybe Output.DTO -> IO ()
-response playData = BL.putStrLn (maybe BL.empty encode playData)
+response :: Output.DTO -> IO ()
+response outputDTO = BL.putStrLn $ encode outputDTO
 
 
 
 -- TODO: Add implementation for response Score
 responseScore :: ([Color], Score) -> IO ()
 responseScore score = BL.putStrLn (encode score)
+
