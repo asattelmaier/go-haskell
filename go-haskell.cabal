@@ -36,12 +36,25 @@ executable go-haskell
     API.JSON.Output.Location
     API.JSON.Output.State
     API.JSON.Output.Color
+    API.REST.Server
+    API.REST.Controller
   build-depends:
     base               ^>=4.14.1.0,
     process            == 1.*,
+
+    -- JSON API Dependencies
     aeson              == 1.*,
     bytestring         >= 0.10.4.0 && < 0.12,
-    text               >= 1.2.3.0 && < 1.3
+    text               >= 1.2.3.0  && < 1.3,
+
+    -- REST API Dependencies
+    snap               >= 1.0      && < 1.2,
+    snap-core          >= 1.0      && < 1.1,
+    snap-server        >= 1.0      && < 1.2,
+    snap-loader-static >= 1.0      && < 1.2,
+    lens               >= 4.8      && < 4.19.2,
+    map-syntax         >= 0.2      && < 0.4,
+    heist              >= 1.0      && < 1.2
   hs-source-dirs:      src
   default-language:    Haskell2010
   ghc-options:
