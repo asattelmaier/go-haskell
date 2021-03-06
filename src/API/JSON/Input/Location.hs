@@ -8,9 +8,9 @@ module API.JSON.Input.Location
 
 
 
-import Data.Aeson
-import Control.Applicative
-import Go.Board
+import           Control.Applicative
+import           Data.Aeson
+import           Go.Board
 
 
 

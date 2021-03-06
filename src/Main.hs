@@ -2,10 +2,10 @@ module Main where
 
 
 
-import System.Environment
-import System.Exit
-import qualified CLI                 (main)
-import qualified API.JSON            (main)
+import qualified API.JSON           (main)
+import qualified CLI                (main)
+import           System.Environment
+import           System.Exit
 
 
 

@@ -12,8 +12,8 @@ module Go.Intersection
 
 
 
-import Data.List
-import Data.Maybe
+import           Data.List
+import           Data.Maybe
 
 
 

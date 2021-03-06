@@ -9,9 +9,9 @@ module CLI.Render
 
 
 
-import Go.Board
-import Go.Game      (Game (Game, positions), Score, Player)
-import CLI.Cursor   (Cursor (Cursor))
+import           CLI.Cursor (Cursor (Cursor))
+import           Go.Board
+import           Go.Game    (Game (Game, positions), Player, Score)
 
 
 cursorRepresentation :: Char
@@ -93,7 +93,7 @@ renderHorizontalLine = renderLine . map (renderHorizontalGutter . renderIntersec
 
 
 renderVerticalLines :: [Intersection] -> [String]
-renderVerticalLines = replicate horizontalGutterSpace . renderLine . map renderVerticalLine 
+renderVerticalLines = replicate horizontalGutterSpace . renderLine . map renderVerticalLine
 
 
 
@@ -122,7 +122,7 @@ renderIntersection (Intersection location (Stone White)) = whiteStone
 renderEndGame :: ([Player], Score) -> String
 renderEndGame (winners, score)
   | isDrawn   = renderScore ++ renderDrawn
-  | otherwise = renderScore ++ renderWinner 
+  | otherwise = renderScore ++ renderWinner
   where isDrawn      = length winners == 2
         renderScore  = "\n" ++ "Score: " ++ show score
         renderWinner = "\n" ++ "Winner: " ++ show (head winners) ++ "\n"

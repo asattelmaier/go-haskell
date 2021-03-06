@@ -8,9 +8,9 @@ module API.JSON.Output.Game
 
 
 
-import Data.Aeson
-import qualified Go.Game as Go
-import API.JSON.Output.Intersection()
+import           API.JSON.Output.Intersection ()
+import           Data.Aeson
+import qualified Go.Game                      as Go
 
 
 

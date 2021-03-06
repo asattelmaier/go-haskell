@@ -5,7 +5,7 @@ module CLI.Command
 
 
 
-import CLI.Cursor (Cursor (Cursor))
+import           CLI.Cursor (Cursor (Cursor))
 
 
 

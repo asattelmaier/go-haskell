@@ -6,8 +6,8 @@ module API.JSON.Output.Color where
 
 
 
-import Data.Aeson
-import Go.Board
+import           Data.Aeson
+import           Go.Board
 
 
 

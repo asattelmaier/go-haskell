@@ -8,10 +8,10 @@ module API.JSON.Input.DTO
 
 
 
-import Data.Aeson
-import API.JSON.Input.Game
-import API.JSON.Input.Location
-import API.JSON.Input.Command
+import           API.JSON.Input.Command
+import           API.JSON.Input.Game
+import           API.JSON.Input.Location
+import           Data.Aeson
 
 
 

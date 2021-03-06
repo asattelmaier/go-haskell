@@ -6,9 +6,9 @@ module API.JSON.Input.State where
 
 
 
-import Data.Aeson
-import Go.Board
-import API.JSON.Input.Color()
+import           API.JSON.Input.Color ()
+import           Data.Aeson
+import           Go.Board
 
 
 

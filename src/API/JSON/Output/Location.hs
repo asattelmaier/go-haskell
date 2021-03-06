@@ -8,8 +8,8 @@ module API.JSON.Output.Location
 
 
 
-import Data.Aeson
-import Go.Board
+import           Data.Aeson
+import           Go.Board
 
 
 
@@ -17,4 +17,4 @@ instance ToJSON Location where
   toJSON (Location x y) =
     object [ "x" .= x,
              "y" .= y ]
-    
+

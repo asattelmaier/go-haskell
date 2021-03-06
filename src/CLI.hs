@@ -2,19 +2,21 @@ module CLI (main) where
 
 
 
-import Data.Maybe
-import Go.Game       (Game, Score, Player, createGame, play, pass, end)
-import CLI.Command   (Command (ExitGame, MoveCursor, PlayStone, Pass))
-import CLI.Cursor    (Cursor, createCursor, translateCursor)
-import CLI.Render    (renderGame, cursorToLocation, renderEndGame, askForGridSize)
-import CLI.UserInput (getGridSize, getCommand)
+import           CLI.Command   (Command (ExitGame, MoveCursor, Pass, PlayStone))
+import           CLI.Cursor    (Cursor, createCursor, translateCursor)
+import           CLI.Render    (askForGridSize, cursorToLocation, renderEndGame,
+                                renderGame)
+import           CLI.UserInput (getCommand, getGridSize)
+import           Data.Maybe
+import           Go.Game       (Game, Player, Score, createGame, end, pass,
+                                play)
 
 
 
 main :: IO ()
 main = do
   putStr askForGridSize
-  
+
   gridSize <- getGridSize
 
   setup gridSize
@@ -33,7 +35,7 @@ run game cursor = do
   putStr $ renderGame game cursor
 
   command <- getCommand
-  
+
   case command of
     ExitGame               -> return ()
 
@@ -55,4 +57,4 @@ run game cursor = do
 terminate :: ([Player], Score) -> IO ()
 terminate (winners, score) = do
   putStr $ renderEndGame (winners, score)
-  return () 
+  return ()

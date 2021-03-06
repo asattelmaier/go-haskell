@@ -4,8 +4,8 @@ module API.JSON.Output.DTO
 
 
 
-import Data.Aeson
-import API.JSON.Output.Game
+import           API.JSON.Output.Game
+import           Data.Aeson
 
 
 

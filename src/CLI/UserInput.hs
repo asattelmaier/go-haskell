@@ -5,23 +5,23 @@ module CLI.UserInput
 
 
 
-import System.Process
-import System.IO
-import CLI.Command (Command, createCommand)
+import           CLI.Command    (Command, createCommand)
+import           System.IO
+import           System.Process
 
 
 
 getCommand :: IO Command
 getCommand = do
-  hSetBuffering stdin NoBuffering 
+  hSetBuffering stdin NoBuffering
   clearLine
-  
+
   userInput <- getChar
-  
+
   let command = createCommand userInput
 
   clearScreen
-  
+
   return command
 
 
@@ -29,9 +29,9 @@ getCommand = do
 getGridSize :: IO Int
 getGridSize = do
   nums <- getLine
-  
+
   clearScreen
- 
+
   return (read nums :: Int)
 
 

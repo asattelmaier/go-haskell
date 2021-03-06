@@ -12,7 +12,7 @@ module Go.Game
 
 
 
-import Go.Board
+import           Go.Board
 
 
 

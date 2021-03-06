@@ -6,10 +6,10 @@ module API.JSON.Output.Intersection where
 
 
 
-import Data.Aeson
-import Go.Board
-import API.JSON.Output.Location()
-import API.JSON.Output.State()
+import           API.JSON.Output.Location ()
+import           API.JSON.Output.State    ()
+import           Data.Aeson
+import           Go.Board
 
 
 

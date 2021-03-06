@@ -13,8 +13,8 @@ module Go.Board
 
 
 
-import Data.Maybe
-import Go.Intersection
+import           Data.Maybe
+import           Go.Intersection
 
 
 

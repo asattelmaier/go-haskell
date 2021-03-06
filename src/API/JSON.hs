@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE RecordWildCards   #-}
 
 
 
@@ -9,14 +9,14 @@ module API.JSON
 
 
 
-import Data.Maybe
-import Data.Aeson
+import           API.JSON.Input.Command
+import qualified API.JSON.Input.DTO         as Input
+import qualified API.JSON.Output.DTO        as Output
+import           Data.Aeson
 import qualified Data.ByteString.Lazy.Char8 as BL
-import qualified API.JSON.Input.DTO as Input
-import qualified API.JSON.Output.DTO as Output
-import API.JSON.Input.Command
-import Go.Board
-import Go.Game
+import           Data.Maybe
+import           Go.Board
+import           Go.Game
 
 
 
@@ -35,17 +35,17 @@ main jsonString = do
 handleInputDTO :: Input.DTO -> IO ()
 handleInputDTO Input.DTO {..} =
 
-  
+
   case command of
     NewGame   -> response $ Output.DTO newGame
       where newGame = createGame $ fromMaybe defaultGridSize size
 
-   
+
     Pass      -> maybe (responseScore endGame) responseGame passGame
       where responseGame updatedGame = response $ Output.DTO updatedGame
             passGame     = pass (fromJust game)
             endGame      = end (fromJust game)
-    
+
 
     PlayStone -> response $ Output.DTO playGame
       where playGame = play (fromJust game) (fromJust location)

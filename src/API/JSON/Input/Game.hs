@@ -2,15 +2,15 @@
 
 
 
-module API.JSON.Input.Game 
+module API.JSON.Input.Game
 ( Game
 ) where
 
 
 
-import Data.Aeson
-import Go.Game
-import API.JSON.Input.Intersection()
+import           API.JSON.Input.Intersection ()
+import           Data.Aeson
+import           Go.Game
 
 
 
