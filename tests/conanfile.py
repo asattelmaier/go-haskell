@@ -10,7 +10,7 @@ current_path = os.getcwd()
 
 class GoHaskell:
     build_command = "cabal build"
-    run_command = "cabal run -v0 :go-haskell -- -m json"
+    run_command = "cabal run -v0 :go-haskell -- json"
 
     @staticmethod
     def get_path():

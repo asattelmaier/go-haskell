@@ -22,16 +22,7 @@ cabal build
 ## Run CLI Game
 
 ```bash
-cabal run :go-haskell -- -m cli
-```
-
-
-
-## Run Tests
-
-```
-conan create . go-haskell-json-api/testing
-conan test tests GoHaskellJsonApiTest/0.0.1@go-haskell-json-api/testing
+cabal run :go-haskell -- cli
 ```
 
 
@@ -48,6 +39,14 @@ conan test tests GoHaskellJsonApiTest/0.0.1@go-haskell-json-api/testing
 | j   | Move down   |
 | h   | Move left   |
 
+
+
+## Run Tests
+
+```
+conan create . go-haskell-json-api/testing
+conan test tests GoHaskellJsonApiTest/0.0.1@go-haskell-json-api/testing
+```
 
 
 
