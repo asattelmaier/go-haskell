@@ -43,9 +43,34 @@ cabal run :go-haskell -- cli
 
 ## Run Tests
 
-```
+Export and build conan package:
+
+```bash
 conan create . go-haskell-json-api/testing
+```
+
+Run Tests:
+
+```bash
 conan test tests GoHaskellJsonApiTest/0.0.1@go-haskell-json-api/testing
+```
+
+
+
+## Create REST Server Container
+
+You must first build the project.
+
+Create Image:
+
+```bash
+docker image build -t go-haskell-rest-server -f docker/rest-server/Dockerfile .
+```
+
+Run Container:
+
+```bash
+docker run -p 8000:8000 --name go-haskell-rest-server go-haskell-rest-server:latest
 ```
 
 
