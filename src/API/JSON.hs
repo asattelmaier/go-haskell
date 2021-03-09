@@ -20,6 +20,7 @@ import           Go.Game
 
 
 
+defaultGridSize :: Int
 defaultGridSize = 19
 
 
@@ -36,6 +37,7 @@ handleInputDTO :: Input.DTO -> IO ()
 handleInputDTO Input.DTO {..} =
 
 
+  -- TODO: This logic can be reused.
   case command of
     NewGame   -> response $ Output.DTO newGame
       where newGame = createGame $ fromMaybe defaultGridSize size

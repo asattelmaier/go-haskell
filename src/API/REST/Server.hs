@@ -1,9 +1,12 @@
 {-# LANGUAGE CPP             #-}
 {-# LANGUAGE TemplateHaskell #-}
 
+
+
 module API.REST.Server where
 
-------------------------------------------------------------------------------
+
+
 import           API.REST.Controller
 import           Control.Exception                (SomeException, try)
 import qualified Data.Text                        as T
@@ -13,6 +16,7 @@ import           Snap.Internal.Http.Server.Config
 import           Snap.Snaplet
 import           Snap.Snaplet.Config
 import           System.IO
+import           Text.Read
 
 #ifdef DEVELOPMENT
 import           Snap.Loader.Dynamic
@@ -24,7 +28,7 @@ import           Snap.Loader.Static
 
 main :: Maybe String -> IO ()
 main portArgument = do
-  let serverPort = read =<< portArgument
+  let serverPort = readMaybe =<< portArgument :: Maybe Int
 
   (conf, site, cleanup) <- $(loadSnapTH [| getConf serverPort |]
                                         'getActions

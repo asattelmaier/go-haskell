@@ -17,11 +17,13 @@ executable go-haskell
     Go.Game
     Go.Board
     Go.Intersection
+    
     CLI
     CLI.Command
     CLI.Cursor
     CLI.Render
     CLI.UserInput
+   
     API.JSON
     API.JSON.Input.DTO
     API.JSON.Input.Command
@@ -36,8 +38,13 @@ executable go-haskell
     API.JSON.Output.Location
     API.JSON.Output.State
     API.JSON.Output.Color
+
     API.REST.Server
+    API.REST.Utils
     API.REST.Controller
+    API.REST.Game.Controller
+    API.REST.Game.Service
+    API.REST.Game.Input.CreateGameDTO
   build-depends:
     base               ^>=4.14.1.0,
     process            == 1.*,
@@ -54,7 +61,7 @@ executable go-haskell
     snap-loader-static >= 1.0      && < 1.2,
     lens               >= 4.8      && < 4.19.2,
     map-syntax         >= 0.2      && < 0.4,
-    heist              >= 1.0      && < 1.2
+    heist              >= 1.0      && < 1.2,
   hs-source-dirs:      src
   default-language:    Haskell2010
   ghc-options:
