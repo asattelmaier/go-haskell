@@ -7,7 +7,7 @@ module API.REST.Server where
 
 
 
-import           API.REST.Controller
+import qualified API.REST.Controller              as Controller
 import           Control.Exception                (SomeException, try)
 import qualified Data.Text                        as T
 import           Snap.Core
@@ -48,6 +48,6 @@ getConf serverPort = do
 getActions :: Config Snap AppConfig -> IO (Snap (), IO ())
 getActions conf = do
   (msgs, site, cleanup) <- runSnaplet
-      (appEnvironment =<< getOther conf) controller
+      (appEnvironment =<< getOther conf) Controller.create
   hPutStrLn stderr $ T.unpack msgs
   return (site, cleanup)

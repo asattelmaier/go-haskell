@@ -3,41 +3,38 @@
 
 
 
-module API.REST.Controller where
+module API.REST.Controller
+( Controller
+, create
+) where
 
 
 
-import           API.REST.Game.Controller
-import           Control.Lens
-import qualified Data.ByteString.Char8    as B
+import qualified API.REST.Service      as Service
+import           API.REST.Utils
+import qualified Data.ByteString.Char8 as B
 import           Snap.Core
 import           Snap.Snaplet
 
 
 
-newtype Controller = Controller { _gameController :: Snaplet GameController
-                                }
+data Controller = Controller
 
 
 
-makeLenses ''Controller
-
-
-
-controller :: SnapletInit b Controller
-controller =
-  makeSnaplet "controller" "Go Haskell REST API Controller" Nothing $ do
-  _gameController <- nestSnaplet "game" gameController createGameController
+create :: SnapletInit b Controller
+create =
+  makeSnaplet "game" "Game Controller" Nothing $ do
   addRoutes routes
-  return $ Controller _gameController
+  return Controller
 
 
 
 routes :: [(B.ByteString, Handler b Controller ())]
-routes = [("status", method GET respondOk)]
+routes = [("/game", createGame)]
 
 
 
-respondOk :: Handler b Controller ()
-respondOk = do
-  modifyResponse . setResponseCode $ 200
+createGame :: Handler b Controller ()
+createGame = method POST $ handlePOST Service.createGame
+

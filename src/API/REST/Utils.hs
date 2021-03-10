@@ -23,7 +23,7 @@ maxRequestBodySize = 1000000
 
 
 
-handlePOST :: (MonadSnap m, FromJSON a1, ToJSON a2) => (a1 -> a2) -> m ()
+handlePOST :: (MonadSnap m, FromJSON a, ToJSON b) => (a -> b) -> m ()
 handlePOST service = getRequestBody >>= responseJSON . service
 
 

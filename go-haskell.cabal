@@ -42,9 +42,9 @@ executable go-haskell
     API.REST.Server
     API.REST.Utils
     API.REST.Controller
-    API.REST.Game.Controller
-    API.REST.Game.Service
-    API.REST.Game.Input.CreateGameDTO
+    API.REST.Service
+    API.REST.Input.CreateGameDTO
+    API.REST.Output.GameDTO
   build-depends:
     base               ^>=4.14.1.0,
     process            == 1.*,
