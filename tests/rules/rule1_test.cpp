@@ -18,7 +18,7 @@ using json = nlohmann::json;
 
 TEST(Rule1, GameBetweenBlackAndWhite) {
   json game = rest_api::create_game();
-
+  
   ASSERT_EQ(game["activePlayer"].get<string>(),"Black");
   ASSERT_EQ(game["passivePlayer"].get<string>(), "White");
 }

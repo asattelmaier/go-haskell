@@ -4,8 +4,7 @@
 
 
 module API.REST.Controller
-( Controller
-, create
+( create
 ) where
 
 

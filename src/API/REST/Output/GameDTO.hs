@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
 
 
@@ -8,9 +9,8 @@ module API.REST.Output.GameDTO
 
 
 
-import           API.JSON.Output.Intersection ()
+import           API.JSON.Output.Game
 import           Data.Aeson
-import           Go.Game
 
 
 
@@ -19,5 +19,5 @@ newtype GameDTO = GameDTO Game
 
 
 instance ToJSON GameDTO where
-  toJSON (GameDTO Game {..}) = toJSON positions
+  toJSON (GameDTO game) = toJSON game
 

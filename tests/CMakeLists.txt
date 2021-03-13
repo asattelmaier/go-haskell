@@ -12,8 +12,8 @@ add_executable(
 
   go_haskell_rest_api_test.cpp
 
-  #rules/rule1_test.cpp
-  rules/rule2_test.cpp
+  rules/rule1_test.cpp
+  #rules/rule2_test.cpp
   #rules/rule3_test.cpp
   #rules/rule4_test.cpp
   #rules/rule5_test.cpp

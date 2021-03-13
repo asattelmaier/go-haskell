@@ -15,7 +15,7 @@ class GoHaskell:
 
     @staticmethod
     def get_run_rest_server_command():
-        execute_command = "sh -c \"{} rest & > /dev/null\""
+        execute_command = "sh -c \"chmod +x {} && {} rest &\"" 
 
         return "find {0} -name {1} -type f -exec {2} \;".format(
                 GoHaskell.get_path() + os.sep + GoHaskell.dist_dir,
@@ -45,9 +45,10 @@ class TestGoHaskellRestApi(ConanFile):
         cmake.build()
     
     def run_go_haskell_rest_server(self):
-        self.output.info("Run Go Haskell REST Server Container")
+        # TODO: Make Port configurableboard
+        self.output.info("Run Go Haskell REST Server")
         self.run(GoHaskell.get_run_rest_server_command())
-        self.output.success("Container is running")
+        self.output.success("REST Server is running")
     
     def imports(self):
         self.copy("*.so", "bin", "lib")
