@@ -10,6 +10,7 @@
 #include <array>
 #include <regex>
 #include <nlohmann/json.hpp>
+#include <httplib.h>
 
 
 
@@ -18,8 +19,8 @@ using json = nlohmann::json;
 
 
 
-namespace json_api {
-  json execute(json payload);
+namespace rest_api {
+  json create_game(json data = "{}"_json);
 }
 
 

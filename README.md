@@ -46,13 +46,13 @@ cabal run :go-haskell -- cli
 Export and build conan package:
 
 ```bash
-conan create . go-haskell-json-api/testing
+conan create . go-haskell-rest-api/testing
 ```
 
 Run Tests:
 
 ```bash
-conan test tests GoHaskellJsonApiTest/0.0.1@go-haskell-json-api/testing
+conan test tests GoHaskellRestApiTest/0.0.1@go-haskell-rest-api/testing
 ```
 
 

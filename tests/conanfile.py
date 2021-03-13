@@ -9,8 +9,20 @@ current_path = os.getcwd()
 
 
 class GoHaskell:
+    app_name = "go-haskell"
     build_command = "cabal build"
-    run_command = "cabal run -v0 :go-haskell -- json"
+    dist_dir = "dist-newstyle"
+
+    @staticmethod
+    def get_run_rest_server_command():
+        execute_command = "sh -c \"{} rest & > /dev/null\""
+
+        return "find {0} -name {1} -type f -exec {2} \;".format(
+                GoHaskell.get_path() + os.sep + GoHaskell.dist_dir,
+                GoHaskell.app_name,
+                execute_command
+            )
+
 
     @staticmethod
     def get_path():
@@ -18,43 +30,47 @@ class GoHaskell:
 
 
 
-class TestGoHaskellJsonApi(ConanFile):
+class TestGoHaskellRestApi(ConanFile):
     settings = "os", "compiler", "arch", "build_type"
     generators = "cmake"
-    requires = ["gtest/1.10.0", "nlohmann_json/3.9.1"]
-    test_app_name = "go_haskell_json_api_test"
-    environment_variables = {
-        "EXECUTE_GO_HASKELL_COMMAND": "\"cd %s && %s \"" % (
-            GoHaskell.get_path(),
-            GoHaskell.run_command
-        ),
-    }
+    requires = ["gtest/1.10.0", "nlohmann_json/3.9.1", "cpp-httplib/0.8.4"]
+    test_app_name = "go_haskell_rest_api_test"
+    environment_variables = {}
 
     def build(self):
-        self.build_go_haskell()
+        self.run_go_haskell_rest_server()
 
         cmake = CMake(self)
         cmake.configure()
         cmake.build()
     
-    def build_go_haskell(self):
-        self.output.info("Build Go Haskell")
-        self.run("cd %s && %s" % (GoHaskell.get_path(), GoHaskell.build_command))
-        self.output.success("Build complete")
-
+    def run_go_haskell_rest_server(self):
+        self.output.info("Run Go Haskell REST Server Container")
+        self.run(GoHaskell.get_run_rest_server_command())
+        self.output.success("Container is running")
+    
     def imports(self):
         self.copy("*.so", "bin", "lib")
         self.copy("*.dll", "bin", "bin")
         self.copy("*.dylib", "bin", "lib")
 
     def test(self):
-        # TODO: Pass arguments to gTest for filtering test like --gtest_filter=Rule3*
-        command = "cd bin && %s.%s%s" % (self.get_formatted_environment_variables(), os.sep, self.test_app_name)
+        # TODO: Pass arguments to gTest for filtering
+        # test like --gtest_filter=Rule3*
+        command = "cd bin && %s.%s%s" % (
+            self.get_formatted_environment_variables(),
+            os.sep,
+            self.test_app_name
+        )
         self.run(command)
+        self.run("kill `pidof %s`" % GoHaskell.app_name)
+    
 
     def get_formatted_environment_variables(self):
         keys = self.environment_variables.keys()
         values = self.environment_variables.values()
 
-        return ''.join(["%s=%s " % (key, value) for key, value in zip(keys, values)])
+        return ''.join(
+            ["%s=%s " % (key, value) for key, value in zip(keys, values)]
+        )
 

@@ -31,14 +31,14 @@ jobs:
         cabal update
         cabal build --only-dependencies --enable-benchmarks
     - name: Build
-      run: ./scripts/build.sh 
+      run: cabal build --enable-benchmarks all
     - name: Archive build artifact
       uses: actions/upload-artifact@v2
       with:
         name: build-artifact
-        path: dist/go-haskell
+        path: dist-newstyle
 
-  jsonApiTests:
+  restApiTest:
 
     runs-on: ubuntu-latest
     needs: build
@@ -56,11 +56,11 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: build-artifact
-        path: dist/go-haskell
+        path: dist-newstyle
     - name: Setup tests
       run: |
-        conan create . go-haskell-json-api/testing
+        conan create . go-haskell-rest-api/testing
         conan profile update settings.compiler.libcxx=libstdc++11 default
     - name: Run tests
-      run: conan test tests GoHaskellJsonApiTest/0.0.1@go-haskell-json-api/testing
+      run: conan test tests GoHaskellRestApiTest/0.0.1@go-haskell-rest-api/testing
 
