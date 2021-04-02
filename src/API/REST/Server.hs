@@ -27,10 +27,8 @@ import           Snap.Loader.Static
 
 
 main :: Maybe String -> IO ()
-main portArgument = do
-  let serverPort = readMaybe =<< portArgument :: Maybe Int
-
-  (conf, site, cleanup) <- $(loadSnapTH [| getConf serverPort |]
+main serverPort = do
+  (conf, site, cleanup) <- $(loadSnapTH [| getConf (readMaybe =<< serverPort) |]
                                         'getActions
                                         ["snaplets/heist/templates"])
 
