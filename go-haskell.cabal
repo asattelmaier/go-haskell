@@ -47,6 +47,8 @@ executable go-haskell
     API.REST.Output.GameDTO
 
     API.WebSocket.Server
+    API.WebSocket.Controller
+    API.WebSocket.Service
   build-depends:
     base               ^>=4.14.1.0,
     process            == 1.*,

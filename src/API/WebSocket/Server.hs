@@ -6,12 +6,13 @@ module API.WebSocket.Server where
 
 
 
-import           Control.Monad      (forever)
-import           Data.Maybe         (fromMaybe)
-import           Data.Text          (Text)
-import qualified Data.Text.IO       as T
-import qualified Network.WebSockets as WS
-import           Text.Read          (readMaybe)
+import qualified API.WebSocket.Controller as Controller
+import           Control.Monad            (forever)
+import           Data.Maybe               (fromMaybe)
+import           Data.Text.Lazy           (Text)
+import qualified Data.Text.Lazy.IO        as T
+import qualified Network.WebSockets       as WS
+import           Text.Read                (readMaybe)
 
 
 
@@ -54,5 +55,5 @@ communicate client = forever $ do
 
   T.putStrLn clientData
 
-  WS.sendTextData client clientData
+  WS.sendTextData client $ Controller.handle clientData
 

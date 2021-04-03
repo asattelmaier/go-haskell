@@ -4,7 +4,7 @@
 
 
 module API.REST.Input.CreateGameDTO
-( CreateGameDTO
+( CreateGameDTO (CreateGameDTO)
 , size
 ) where
 
