@@ -14,8 +14,8 @@ class GoHaskell:
     dist_dir = "dist-newstyle"
 
     @staticmethod
-    def get_run_rest_server_command():
-        execute_command = "sh -c \"chmod +x {} && {} rest &\"" 
+    def get_run_socket_server_command():
+        execute_command = "sh -c \"chmod +x {} && {} socket &\"" 
 
         return "find {0} -name {1} -type f -exec {2} \;".format(
                 GoHaskell.get_path() + os.sep + GoHaskell.dist_dir,
@@ -30,25 +30,25 @@ class GoHaskell:
 
 
 
-class TestGoHaskellRestApi(ConanFile):
+class TestGoHaskellSocketApi(ConanFile):
     settings = "os", "compiler", "arch", "build_type"
     generators = "cmake"
-    requires = ["gtest/1.10.0", "nlohmann_json/3.9.1", "cpp-httplib/0.8.4"]
-    test_app_name = "go_haskell_rest_api_test"
+    requires = ["gtest/1.10.0", "nlohmann_json/3.9.1", "websocketpp/0.8.2"]
+    test_app_name = "go_haskell_socket_api_test"
     environment_variables = {}
 
     def build(self):
-        self.run_go_haskell_rest_server()
+        self.run_go_haskell_socket_server()
 
         cmake = CMake(self)
         cmake.configure()
         cmake.build()
     
-    def run_go_haskell_rest_server(self):
+    def run_go_haskell_socket_server(self):
         # TODO: Make Port configurableboard
-        self.output.info("Run Go Haskell REST Server")
-        self.run(GoHaskell.get_run_rest_server_command())
-        self.output.success("REST Server is running")
+        self.output.info("Run Go Haskell Socket Server")
+        self.run(GoHaskell.get_run_socket_server_command())
+        self.output.success("Socket Server is running")
     
     def imports(self):
         self.copy("*.so", "bin", "lib")
