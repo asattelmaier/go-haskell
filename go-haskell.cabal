@@ -49,6 +49,10 @@ executable go-haskell
     API.WebSocket.Server
     API.WebSocket.Controller
     API.WebSocket.Service
+    API.WebSocket.Input.Data
+    API.WebSocket.Input.CreateGameDTO
+    API.WebSocket.Input.PlayGameDTO
+    API.WebSocket.Input.CommandDTO
   build-depends:
     base               ^>=4.14.1.0,
     process            == 1.*,

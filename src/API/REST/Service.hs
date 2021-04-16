@@ -1,7 +1,3 @@
-{-# LANGUAGE RecordWildCards #-}
-
-
-
 module API.REST.Service
 ( createGame
 ) where

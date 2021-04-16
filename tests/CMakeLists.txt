@@ -13,8 +13,8 @@ add_executable(
   go_haskell_socket_api_test.cpp
 
   rules/rule1_test.cpp
-  #rules/rule2_test.cpp
-  #rules/rule3_test.cpp
+  rules/rule2_test.cpp
+  rules/rule3_test.cpp
   #rules/rule4_test.cpp
   #rules/rule5_test.cpp
   #rules/rule6_test.cpp

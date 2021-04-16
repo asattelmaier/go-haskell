@@ -1,4 +1,5 @@
 #include "socket_api.h"
+#include <iostream>
 
 
 
@@ -57,6 +58,9 @@ namespace socket_api {
     while(!has_responded.load()) {
       boost::this_thread::sleep(boost::posix_time::milliseconds(100));
     }
+
+    std::cout << "test" << std::endl;
+    std::cout << responseData << std::endl;
 
     return json::parse(responseData);
   }

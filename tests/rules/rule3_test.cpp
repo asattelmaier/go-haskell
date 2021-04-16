@@ -1,11 +1,5 @@
 #include <gtest/gtest.h>
-#include <nlohmann/json.hpp>
-#include "../utils/json_api.h"
-
-
-
-using namespace std;
-using json = nlohmann::json;
+#include "../utils/socket_api.h"
 
 
 
@@ -17,12 +11,11 @@ using json = nlohmann::json;
  */
 
 TEST(Rule3, PlayedWithStones) {
-  json createNewGame = json::object({ {"command", "NewGame"} });
-  json goData = json::object({ {"game", json_api::execute(createNewGame)} });
+  json goData = json::object({ {"game", socket_api::send(R"({ "command": { "name": "NewGame" } })"_json)} });
 
-  goData["location"] = json::object({ {"x", 0}, {"y", 0} });
-  goData["command"] = "PlayStone";
-  bool hasStonePlayed = json_api::execute(goData)["positions"][0][0][0]["state"] == "Black";
+  goData["command"] = json::object({ {"name", "PlayStone"} }); 
+  goData["command"]["location"] = json::object({ {"x", 0}, {"y", 0} });
+  bool hasStonePlayed = socket_api::send(goData)["positions"][0][0][0]["state"] == "Black";
 
   ASSERT_TRUE(hasStonePlayed);
 }

@@ -51,7 +51,7 @@ getColor (Intersection _ (Stone color)) = Just color
 
 
 hasColor :: Intersection -> Color -> Bool
-hasColor intersection color = maybe False (color ==) $ getColor intersection
+hasColor intersection color = (Just color ==) $ getColor intersection
 
 
 

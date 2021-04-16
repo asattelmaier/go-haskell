@@ -1,24 +1,24 @@
 module API.WebSocket.Service
 ( createGame
+, playGame
 ) where
 
 
 
-import           API.REST.Input.CreateGameDTO
 import           API.REST.Output.GameDTO
-import           Control.Lens
-import           Data.Maybe                   (fromMaybe)
-import qualified Go.Game                      as Go
+import qualified API.WebSocket.Input.CreateGameDTO as CreateGame
+import qualified API.WebSocket.Input.PlayGameDTO   as PlayGame
+import qualified Go.Game                           as Go
 
 
 
-defaultGridSize :: Int
-defaultGridSize = 19
+createGame :: CreateGame.DTO -> GameDTO
+createGame = GameDTO . Go.createGame . CreateGame.getSize
 
 
 
-createGame :: Maybe CreateGameDTO -> GameDTO
-createGame = GameDTO . Go.createGame . getSize . fromMaybe emptyDTO
-  where emptyDTO = CreateGameDTO Nothing
-        getSize = fromMaybe defaultGridSize . view size
+playGame :: PlayGame.DTO -> GameDTO
+playGame dto = GameDTO . Go.play getGame $ getLocation
+  where getGame     = PlayGame.getGame dto
+        getLocation = PlayGame.getLocation dto
 

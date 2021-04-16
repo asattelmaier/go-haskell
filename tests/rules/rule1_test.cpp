@@ -1,11 +1,5 @@
 #include <gtest/gtest.h>
-#include <nlohmann/json.hpp>
 #include "../utils/socket_api.h"
-
-
-
-using namespace std;
-using json = nlohmann::json;
 
 
 
@@ -17,7 +11,8 @@ using json = nlohmann::json;
  */
 
 TEST(Rule1, GameBetweenBlackAndWhite) {
-  json game = socket_api::send();
+  // TODO: Create function for new game
+  json game = socket_api::send(R"({ "command": { "name": "NewGame" } })"_json);
   
   ASSERT_EQ(game["activePlayer"].get<string>(),"Black");
   ASSERT_EQ(game["passivePlayer"].get<string>(), "White");

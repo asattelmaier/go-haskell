@@ -1,11 +1,5 @@
 #include <gtest/gtest.h>
-#include <nlohmann/json.hpp>
-#include "../utils/rest_api.h"
-
-
-
-using namespace std;
-using json = nlohmann::json;
+#include "../utils/socket_api.h"
 
 
 
@@ -17,7 +11,8 @@ using json = nlohmann::json;
  */
 
 TEST(Rule2, BoardSize) {
-  json board = rest_api::create_game().front();
+  json game = socket_api::send(R"({ "command": { "name": "NewGame" } })"_json);
+  json board = game["positions"].front();
 
   ASSERT_EQ(board.size(), 19);
   ASSERT_EQ(board.front().size(), 19);
