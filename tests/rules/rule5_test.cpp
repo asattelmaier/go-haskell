@@ -1,12 +1,6 @@
 #include <gtest/gtest.h>
-#include <nlohmann/json.hpp>
-#include "../utils/json_api.h"
+#include "../utils/socket_api.h"
 #include "../utils/board.h"
-
-
-
-using namespace std;
-using json = nlohmann::json;
 
 
 
@@ -18,11 +12,12 @@ using json = nlohmann::json;
  */
 
 TEST(Rule5, InitialPosition) {
-  json createNewGame = json::object({ {"command", "NewGame"} });
-  json goData = json::object({ {"game", json_api::execute(createNewGame)} });
+  json game = socket_api::new_game();
   
-  json board = goData["game"]["positions"].front();
-  bool isBoardEmpty = !board::has_state(board, "Black") && !board::has_state(board, "White");
+  json board = board::get_board(game);
+  bool hasBlackState = board::has_state(board, "Black");
+  bool hasWhiteState = board::has_state(board, "White");
+  bool isBoardEmpty = !hasBlackState && !hasWhiteState;
 
   ASSERT_TRUE(isBoardEmpty);
 }

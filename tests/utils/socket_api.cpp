@@ -49,6 +49,8 @@ namespace socket_api {
   void init(string uri) {
     socket_client.init_asio();
     socket_client.start_perpetual();
+
+    socket_client.clear_access_channels(websocketpp::log::alevel::all);
     
     socket_client.set_open_handler(bind(&on_open));
     socket_client.set_message_handler(bind(&on_message, ::_2));
@@ -81,6 +83,13 @@ namespace socket_api {
   json play_stone(json game, json location) {
     json data = R"({ "command": { "name": "PlayStone" } })"_json;
     data["command"]["location"] = location;
+    data["game"] = game;
+    
+    return send(data);
+  }
+
+  json pass(json game) {
+    json data = R"({ "command": { "name": "Pass" } })"_json;
     data["game"] = game;
     
     return send(data);

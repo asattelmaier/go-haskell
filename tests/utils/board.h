@@ -14,7 +14,7 @@ using json = nlohmann::json;
 
 namespace board {
 
-  json get_board(json game, int position);
+  json get_board(json game, int position = 0);
 
   string get_state(json board, int x, int y);
   

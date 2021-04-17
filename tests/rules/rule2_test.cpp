@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "../utils/socket_api.h"
+#include "../utils/board.h"
 
 
 
@@ -12,7 +13,7 @@
 
 TEST(Rule2, BoardSize) {
   json game = socket_api::new_game();
-  json board = game["positions"].front();
+  json board = board::get_board(game);
 
   ASSERT_EQ(board.size(), 19);
   ASSERT_EQ(board.front().size(), 19);

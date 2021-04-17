@@ -1,11 +1,6 @@
 #include <gtest/gtest.h>
-#include <nlohmann/json.hpp>
-#include "../utils/json_api.h"
-
-
-
-using namespace std;
-using json = nlohmann::json;
+#include "../utils/socket_api.h"
+#include "../utils/board.h"
 
 
 
@@ -17,12 +12,10 @@ using json = nlohmann::json;
  */
 
 TEST(Rule6, Alternate) {
-  json createNewGame = json::object({ {"command", "NewGame"} });
-  json goData = json::object({ {"game", json_api::execute(createNewGame)} });
+  json game = socket_api::new_game();
 
   string firstPlayer = goData["game"]["activePlayer"];
-  goData["command"] = "Pass";
-  string secondPlayer = json_api::execute(goData)["activePlayer"];
+  string secondPlayer = socket_api::pass(game)["activePlayer"];
   bool hasAlternated = firstPlayer == "Black" && secondPlayer == "White";
 
   ASSERT_TRUE(hasAlternated);

@@ -10,7 +10,6 @@ import qualified API.WebSocket.Controller as Controller
 import           Control.Monad            (forever)
 import           Data.Maybe               (fromMaybe)
 import           Data.Text.Lazy           (Text)
-import qualified Data.Text.Lazy.IO        as T
 import qualified Network.WebSockets       as WS
 import           Text.Read                (readMaybe)
 
@@ -52,8 +51,6 @@ server pending = do
 communicate :: Client -> IO ()
 communicate client = forever $ do
   clientData <- WS.receiveData client :: IO Text
-
-  T.putStrLn clientData
 
   WS.sendTextData client $ Controller.handle clientData
 

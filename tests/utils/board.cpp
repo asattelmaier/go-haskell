@@ -10,7 +10,7 @@ namespace board {
 
 
   string get_state(json board, int x, int y) {
-    return board[x][y]["state"];
+    return board[y][x]["state"];
   }
 
 
