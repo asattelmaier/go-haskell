@@ -12,7 +12,7 @@
  */
 
 TEST(Rule5, InitialPosition) {
-  json game = socket_api::new_game();
+  json game = socket_api::create_game();
   
   json board = board::get_board(game);
   bool hasBlackState = board::has_state(board, "Black");

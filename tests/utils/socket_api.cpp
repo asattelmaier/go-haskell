@@ -65,14 +65,14 @@ namespace socket_api {
 
   
 
-  json new_game() {
-    return send(R"({ "command": { "name": "NewGame" } })"_json);
+  json create_game() {
+    return send(R"({ "command": { "name": "CreateGame" } })"_json);
   }
 
 
 
-  json new_game(int size) {
-    json data = R"({ "command": { "name": "NewGame" } })"_json;
+  json create_game(int size) {
+    json data = R"({ "command": { "name": "CreateGame" } })"_json;
     data["command"]["size"] = size;
     
     return send(data);

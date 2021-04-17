@@ -3,10 +3,10 @@ module API.WebSocket.Controller
 ) where
 
 
-import           API.JSON.Input.Command
+import           API.WebSocket.Input.Command
 import qualified API.WebSocket.Input.CreateGameDTO as CreateGameDTO
 import           API.WebSocket.Input.Data
-import qualified API.WebSocket.Input.PlayGameDTO   as PlayGameDTO
+import qualified API.WebSocket.Input.PlayStoneDTO  as PlayStoneDTO
 import qualified API.WebSocket.Service             as Service
 import qualified Data.Aeson                        as JSON
 import           Data.Text                         (pack)
@@ -28,21 +28,21 @@ handle rawData = do
 
       case getCommandName inputData of
 
-        PlayStone -> playGame inputData
+        PlayStone  -> playStone inputData
 
-        NewGame   -> createGame inputData
+        CreateGame -> createGame inputData
 
-        _         -> respondError "No valid command provided"
+        _          -> respondError "No valid command provided"
 
 
 
 createGame :: Data -> Text
-createGame = respond . fmap Service.createGame . CreateGameDTO.fromData 
+createGame = respond . fmap Service.createGame . CreateGameDTO.fromData
 
 
 
-playGame :: Data -> Text
-playGame = respond . fmap Service.playGame . PlayGameDTO.fromData 
+playStone :: Data -> Text
+playStone = respond . fmap Service.playStone . PlayStoneDTO.fromData
 
 
 

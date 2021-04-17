@@ -12,7 +12,7 @@
  */
 
 TEST(Rule2, BoardSize) {
-  json game = socket_api::new_game();
+  json game = socket_api::create_game();
   json board = board::get_board(game);
 
   ASSERT_EQ(board.size(), 19);

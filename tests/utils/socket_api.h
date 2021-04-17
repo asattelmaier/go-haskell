@@ -27,9 +27,9 @@ namespace socket_api {
 
   void init(string uri);
   
-  json new_game(int size);
+  json create_game(int size);
 
-  json new_game();
+  json create_game();
 
   json play_stone(json game, json location);
 

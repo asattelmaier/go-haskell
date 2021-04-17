@@ -11,7 +11,7 @@
  */
 
 TEST(Rule1, GameBetweenBlackAndWhite) {
-  json game = socket_api::new_game();
+  json game = socket_api::create_game();
   
   ASSERT_EQ(game["activePlayer"].get<string>(),"Black");
   ASSERT_EQ(game["passivePlayer"].get<string>(), "White");

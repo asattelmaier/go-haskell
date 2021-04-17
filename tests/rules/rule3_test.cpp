@@ -12,7 +12,7 @@
  */
 
 TEST(Rule3, PlayedWithStones) {
-  json game = socket_api::new_game();
+  json game = socket_api::create_game();
   json location = json::object({ {"x", 0}, {"y", 0} });
 
   json board = board::get_board(socket_api::play_stone(game, location));

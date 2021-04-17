@@ -15,15 +15,14 @@ module API.WebSocket.Input.Data
 
 
 import           API.JSON.Input.Game
-import           API.JSON.Input.Command
 import           API.JSON.Input.Location
-import           API.WebSocket.Input.CommandDTO
+import           API.WebSocket.Input.Command
 import           Control.Lens
 import           Data.Aeson
 
 
 
-data Data = Data { _command :: CommandDTO
+data Data = Data { _command :: Command
                  , _game    :: Maybe Game
                  } deriving (Show)
 
@@ -40,7 +39,7 @@ instance FromJSON Data where
 
 
 
-getCommand :: Data -> CommandDTO
+getCommand :: Data -> Command
 getCommand = view command
 
 
@@ -50,7 +49,7 @@ getGame = view game
 
 
 
-getCommandName :: Data -> Command
+getCommandName :: Data -> Name
 getCommandName = view name . getCommand
 
 

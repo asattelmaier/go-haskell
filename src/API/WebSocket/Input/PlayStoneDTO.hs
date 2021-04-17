@@ -3,7 +3,7 @@
 
 
 
-module API.WebSocket.Input.PlayGameDTO
+module API.WebSocket.Input.PlayStoneDTO
 ( DTO (DTO)
 , getGame
 , getLocation

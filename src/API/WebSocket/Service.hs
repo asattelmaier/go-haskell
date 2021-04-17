@@ -1,13 +1,13 @@
 module API.WebSocket.Service
 ( createGame
-, playGame
+, playStone
 ) where
 
 
 
 import           API.REST.Output.GameDTO
 import qualified API.WebSocket.Input.CreateGameDTO as CreateGame
-import qualified API.WebSocket.Input.PlayGameDTO   as PlayGame
+import qualified API.WebSocket.Input.PlayStoneDTO  as PlayStone
 import qualified Go.Game                           as Go
 
 
@@ -17,8 +17,8 @@ createGame = GameDTO . Go.createGame . CreateGame.getSize
 
 
 
-playGame :: PlayGame.DTO -> GameDTO
-playGame dto = GameDTO . Go.play getGame $ getLocation
-  where getGame     = PlayGame.getGame dto
-        getLocation = PlayGame.getLocation dto
+playStone :: PlayStone.DTO -> GameDTO
+playStone dto = GameDTO . Go.play getGame $ getLocation
+  where getGame     = PlayStone.getGame dto
+        getLocation = PlayStone.getLocation dto
 
