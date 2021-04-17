@@ -1,5 +1,4 @@
 #include "socket_api.h"
-#include <iostream>
 
 
 
@@ -21,6 +20,28 @@ void on_message(client::message_ptr message) {
   responseData = message->get_payload();
   has_responded = true;
 }
+  
+
+
+json send(json data) {
+  has_responded = false;
+
+  while(!is_open.load()) {
+    boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+  }
+    
+  socket_client.send(
+    connection_handle,
+    data.dump(),
+    websocketpp::frame::opcode::text
+  );
+    
+  while(!has_responded.load()) {
+    boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+  }
+
+  return json::parse(responseData);
+}
 
 
 
@@ -40,29 +61,29 @@ namespace socket_api {
     socket_client.run();
   }
 
+  
+
+  json new_game() {
+    return send(R"({ "command": { "name": "NewGame" } })"_json);
+  }
 
 
-  json send(json data) {
-    has_responded = false;
 
-    while(!is_open.load()) {
-      boost::this_thread::sleep(boost::posix_time::milliseconds(100));
-    }
+  json new_game(int size) {
+    json data = R"({ "command": { "name": "NewGame" } })"_json;
+    data["command"]["size"] = size;
     
-    socket_client.send(
-      connection_handle,
-      data.dump(),
-      websocketpp::frame::opcode::text
-    );
+    return send(data);
+  }
+
+
+
+  json play_stone(json game, json location) {
+    json data = R"({ "command": { "name": "PlayStone" } })"_json;
+    data["command"]["location"] = location;
+    data["game"] = game;
     
-    while(!has_responded.load()) {
-      boost::this_thread::sleep(boost::posix_time::milliseconds(100));
-    }
-
-    std::cout << "test" << std::endl;
-    std::cout << responseData << std::endl;
-
-    return json::parse(responseData);
+    return send(data);
   }
 }
 

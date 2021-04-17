@@ -3,6 +3,18 @@
 
 
 namespace board {
+  json get_board(json game, int position) {
+    return game["positions"][position];
+  }
+ 
+
+
+  string get_state(json board, int x, int y) {
+    return board[x][y]["state"];
+  }
+
+
+
   bool has_state(json board, string state) {
     bool hasState = false;
   

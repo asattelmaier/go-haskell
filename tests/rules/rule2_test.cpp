@@ -11,7 +11,7 @@
  */
 
 TEST(Rule2, BoardSize) {
-  json game = socket_api::send(R"({ "command": { "name": "NewGame" } })"_json);
+  json game = socket_api::new_game();
   json board = game["positions"].front();
 
   ASSERT_EQ(board.size(), 19);

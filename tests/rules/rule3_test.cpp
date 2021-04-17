@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "../utils/socket_api.h"
+#include "../utils/board.h"
 
 
 
@@ -11,11 +12,11 @@
  */
 
 TEST(Rule3, PlayedWithStones) {
-  json goData = json::object({ {"game", socket_api::send(R"({ "command": { "name": "NewGame" } })"_json)} });
+  json game = socket_api::new_game();
+  json location = json::object({ {"x", 0}, {"y", 0} });
 
-  goData["command"] = json::object({ {"name", "PlayStone"} }); 
-  goData["command"]["location"] = json::object({ {"x", 0}, {"y", 0} });
-  bool hasStonePlayed = socket_api::send(goData)["positions"][0][0][0]["state"] == "Black";
+  json board = board::get_board(socket_api::play_stone(game, location), 0);
+  bool hasStonePlayed = board::get_state(board, 0, 0) == "Black";
 
   ASSERT_TRUE(hasStonePlayed);
 }

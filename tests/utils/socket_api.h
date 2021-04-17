@@ -27,7 +27,11 @@ namespace socket_api {
 
   void init(string uri);
   
-  json send(json data = "{}"_json);
+  json new_game(int size);
+
+  json new_game();
+
+  json play_stone(json game, json location);
 
 }
 
