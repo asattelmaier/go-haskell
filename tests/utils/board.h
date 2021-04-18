@@ -16,7 +16,7 @@ namespace board {
 
   json get_board(json game, int position = 0);
 
-  string get_state(json board, int x, int y);
+  string get_state(json board, tuple<int, int> location);
   
   bool has_state(json board, string state);
 

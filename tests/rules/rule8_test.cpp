@@ -1,11 +1,7 @@
 #include <gtest/gtest.h>
-#include <nlohmann/json.hpp>
-#include "../utils/json_api.h"
-
-
-
-using namespace std;
-using json = nlohmann::json;
+#include <iostream>
+#include "../utils/socket_api.h"
+#include "../utils/board.h"
 
 
 
@@ -18,8 +14,7 @@ using json = nlohmann::json;
  */
 
 TEST(Rule8, ProhibitionOfRepetition) {
-  json createNewGame = json::object({ {"command", "NewGame"}, {"size", 5} });
-  json goData = json::object({ {"game", json_api::execute(createNewGame)} });
+  json game = socket_api::create_game(5);
 
   /*
    *  +--X--O--+--+
@@ -33,12 +28,12 @@ TEST(Rule8, ProhibitionOfRepetition) {
    *  +--+--+--+--+
    */
 
-  goData["game"]["positions"][0][0][1]["state"] = "Black";
-  goData["game"]["positions"][0][1][0]["state"] = "Black";
-  goData["game"]["positions"][0][2][1]["state"] = "Black";
-  goData["game"]["positions"][0][0][2]["state"] = "White";
-  goData["game"]["positions"][0][1][3]["state"] = "White";
-  goData["game"]["positions"][0][2][2]["state"] = "White";
+  game["positions"][0][0][1]["state"] = "Black";
+  game["positions"][0][1][0]["state"] = "Black";
+  game["positions"][0][2][1]["state"] = "Black";
+  game["positions"][0][0][2]["state"] = "White";
+  game["positions"][0][1][3]["state"] = "White";
+  game["positions"][0][2][2]["state"] = "White";
   
   /*
    *  +--X--O--+--+
@@ -52,11 +47,10 @@ TEST(Rule8, ProhibitionOfRepetition) {
    *  +--+--+--+--+
    */
   
-  goData["location"] = json::object({ {"x", 1}, {"y", 1} });
-  goData["game"]["activePlayer"] = "White";
-  goData["game"]["passivePlayer"] = "Black";
-  goData["command"] = "PlayStone";
-  goData["game"] = json_api::execute(goData);
+  tuple<int, int> location = make_tuple(1, 1);
+  game["activePlayer"] = "White";
+  game["passivePlayer"] = "Black";
+  game = socket_api::play_stone(game, location);
   
   /*
    *  +--X--O--+--+
@@ -70,9 +64,8 @@ TEST(Rule8, ProhibitionOfRepetition) {
    *  +--+--+--+--+
    */
 
-  goData["location"] = json::object({ {"x", 2}, {"y", 1} });
-  goData["command"] = "PlayStone";
-  goData["game"] = json_api::execute(goData);
+  location = make_tuple(2, 1);
+  game = socket_api::play_stone(game, location);
 
   /*
    *  +--X--O--+--+
@@ -86,8 +79,7 @@ TEST(Rule8, ProhibitionOfRepetition) {
    *  +--+--+--+--+
    */
 
-  goData["location"] = json::object({ {"x", 1}, {"y", 1} });
-  goData["command"] = "PlayStone";
+  location = make_tuple(1, 1);
   
   /*
    *  +--X--O--+--+
@@ -101,17 +93,16 @@ TEST(Rule8, ProhibitionOfRepetition) {
    *  +--+--+--+--+
    */
  
-  json game = json_api::execute(goData);
+  game = socket_api::play_stone(game, location);
 
-  
+
   ASSERT_EQ(game["positions"][0][1][1]["state"], "Empty");
   ASSERT_EQ(game["activePlayer"], "White");
   ASSERT_EQ(game["passivePlayer"], "Black");
 }
 
 TEST(Rule8, LegalRecapture) {
-  json createNewGame = json::object({ {"command", "NewGame"}, {"size", 5} });
-  json goData = json::object({ {"game", json_api::execute(createNewGame)} });
+  json game = socket_api::create_game(5);
 
   /*
    *  +--+--+--+--+
@@ -125,13 +116,13 @@ TEST(Rule8, LegalRecapture) {
    *  O--O--X--+--+
    */
 
-  goData["game"]["positions"][0][3][1]["state"] = "Black";
-  goData["game"]["positions"][0][3][2]["state"] = "Black";
-  goData["game"]["positions"][0][4][2]["state"] = "Black";
-  goData["game"]["positions"][0][1][0]["state"] = "White";
-  goData["game"]["positions"][0][2][1]["state"] = "White";
-  goData["game"]["positions"][0][4][0]["state"] = "White";
-  goData["game"]["positions"][0][4][1]["state"] = "White";
+  game["positions"][0][3][1]["state"] = "Black";
+  game["positions"][0][3][2]["state"] = "Black";
+  game["positions"][0][4][2]["state"] = "Black";
+  game["positions"][0][1][0]["state"] = "White";
+  game["positions"][0][2][1]["state"] = "White";
+  game["positions"][0][4][0]["state"] = "White";
+  game["positions"][0][4][1]["state"] = "White";
   
   /*
    *  +--+--+--+--+
@@ -145,11 +136,10 @@ TEST(Rule8, LegalRecapture) {
    *  O--O--X--+--+
    */
   
-  goData["location"] = json::object({ {"x", 0}, {"y", 3} });
-  goData["game"]["activePlayer"] = "White";
-  goData["game"]["passivePlayer"] = "Black";
-  goData["command"] = "PlayStone";
-  goData["game"] = json_api::execute(goData);
+  tuple<int, int> location = make_tuple(0, 3);
+  game["activePlayer"] = "White";
+  game["passivePlayer"] = "Black";
+  game = socket_api::play_stone(game, location);
   
   /*
    *  +--+--+--+--+
@@ -163,9 +153,8 @@ TEST(Rule8, LegalRecapture) {
    *  +--+--X--+--+
    */
 
-  goData["location"] = json::object({ {"x", 0}, {"y", 2} });
-  goData["command"] = "PlayStone";
-  goData["game"] = json_api::execute(goData);
+  location = make_tuple(0, 2);
+  game = socket_api::play_stone(game, location);
 
   /*
    *  +--+--+--+--+
@@ -179,9 +168,8 @@ TEST(Rule8, LegalRecapture) {
    *  +--+--X--+--+
    */
 
-  goData["location"] = json::object({ {"x", 0}, {"y", 3} });
-  goData["command"] = "PlayStone";
-  json game = json_api::execute(goData);
+  location = make_tuple(0, 3);
+  game = socket_api::play_stone(game, location);
 
 
   ASSERT_EQ(game["positions"][0][2][0]["state"], "Empty");

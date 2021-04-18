@@ -9,8 +9,8 @@ namespace board {
  
 
 
-  string get_state(json board, int x, int y) {
-    return board[y][x]["state"];
+  string get_state(json board, tuple<int, int> location) {
+    return board[get<1>(location)][get<0>(location)]["state"];
   }
 
 

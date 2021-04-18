@@ -3,6 +3,7 @@
 
 
 
+#include <tuple>
 #include <string>
 #include <atomic>
 #include <nlohmann/json.hpp>
@@ -31,7 +32,9 @@ namespace socket_api {
 
   json create_game();
 
-  json play_stone(json game, json location);
+  json play_stone(json game, tuple<int, int> location);
+
+  json pass(json game);
 
 }
 

@@ -45,6 +45,15 @@ json send(json data) {
 
 
 
+json create_location(tuple<int, int> location) {
+  return json::object({
+    {"x", get<0>(location)},
+    {"y", get<1>(location)}
+  });
+}
+
+
+
 namespace socket_api {
   void init(string uri) {
     socket_client.init_asio();
@@ -80,13 +89,15 @@ namespace socket_api {
 
 
 
-  json play_stone(json game, json location) {
+  json play_stone(json game, tuple<int, int> location) {
     json data = R"({ "command": { "name": "PlayStone" } })"_json;
-    data["command"]["location"] = location;
+    data["command"]["location"] = create_location(location);
     data["game"] = game;
     
     return send(data);
   }
+
+
 
   json pass(json game) {
     json data = R"({ "command": { "name": "Pass" } })"_json;

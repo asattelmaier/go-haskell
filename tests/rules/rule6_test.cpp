@@ -14,7 +14,7 @@
 TEST(Rule6, Alternate) {
   json game = socket_api::create_game();
 
-  string firstPlayer = goData["game"]["activePlayer"];
+  string firstPlayer = game["activePlayer"];
   string secondPlayer = socket_api::pass(game)["activePlayer"];
   bool hasAlternated = firstPlayer == "Black" && secondPlayer == "White";
 

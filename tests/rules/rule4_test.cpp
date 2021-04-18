@@ -16,7 +16,7 @@
 TEST(Rule4, EmptyIntersection) {
   json game = socket_api::create_game();
 
-  string state = board::get_state(board::get_board(game), 0, 0);
+  string state = board::get_state(board::get_board(game), make_tuple(0, 0));
 
   ASSERT_EQ(state, "Empty");
 }
@@ -26,10 +26,10 @@ TEST(Rule4, EmptyIntersection) {
 
 TEST(Rule4, OccupiedByBlack) {
   json game = socket_api::create_game();
-  json location = json::object({ {"x", 0}, {"y", 0} });
 
+  tuple<int, int> location = make_tuple(0, 0);
   json board = board::get_board(socket_api::play_stone(game, location));
-  string state = board::get_state(board, 0, 0);
+  string state = board::get_state(board, location);
 
   ASSERT_EQ(state, "Black");
 }
@@ -40,13 +40,12 @@ TEST(Rule4, OccupiedByBlack) {
 TEST(Rule4, OccupiedByWhite) {
   json game = socket_api::create_game();
 
-  json firstPlayLocation = json::object({ {"x", 0}, {"y", 0} });
-  json firstPlay = socket_api::play_stone(game, firstPlayLocation);
+  json firstPlay = socket_api::play_stone(game, make_tuple(0, 0));
   
-  json secondPlayLocation = json::object({ {"x", 1}, {"y", 0} });
-  json secondPlay = socket_api::play_stone(firstPlay, secondPlayLocation);
+  json secondPlay = socket_api::play_stone(firstPlay, make_tuple(1, 0));
   
-  string state = board::get_state(board::get_board(secondPlay), 1, 0);
+  json board = board::get_board(secondPlay);
+  string state = board::get_state(board, make_tuple(1, 0));
 
   ASSERT_EQ(state, "White");
 }
