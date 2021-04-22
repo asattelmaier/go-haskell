@@ -1,4 +1,5 @@
-{-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE NamedFieldPuns  #-}
+{-# LANGUAGE RecordWildCards #-}
 
 module Go.Game
 ( Game (Game, positions, activePlayer, passivePlayer)
@@ -34,7 +35,7 @@ createGame grid = Game { positions     = [createBoard grid]
 
 
 end :: Game -> ([Player], Score)
-end Game {positions, activePlayer, passivePlayer}
+end Game {..}
   | activePlayerScore > passivePlayerScore  = ([activePlayer], activePlayerScore)
   | activePlayerScore == passivePlayerScore = ([activePlayer, passivePlayer], activePlayerScore)
   | otherwise                               = ([passivePlayer], passivePlayerScore)
@@ -44,13 +45,12 @@ end Game {positions, activePlayer, passivePlayer}
 
 
 getScore :: Board -> Player -> Score
-getScore position player = length area
-  where area = getArea position player
+getScore board = length . getArea board
 
 
 
 pass :: Game -> Maybe Game
-pass Game {positions, activePlayer, passivePlayer}
+pass Game {..}
   | isConsecutivePass positions = Nothing
   | otherwise                   = Just $ alternate Game { positions = head positions:positions
                                                         , activePlayer
@@ -78,7 +78,7 @@ play game location
 
 
 isEmpty :: Game -> Location -> Bool
-isEmpty Game {positions} = isLocationEmpty (head positions)
+isEmpty Game {..} = isLocationEmpty (head positions)
 
 
 
@@ -90,13 +90,13 @@ playStone Game {positions = lastPreviousPosition:previousPositions, activePlayer
 
 
 capture :: Game -> Game
-capture Game {positions, activePlayer, passivePlayer} =
+capture Game {..} =
   updatePosition Game {positions, activePlayer, passivePlayer} passivePlayer
 
 
 
 selfCapture :: Game -> Game
-selfCapture Game {positions, activePlayer, passivePlayer} =
+selfCapture Game {..} =
   updatePosition Game {positions, activePlayer, passivePlayer} activePlayer
 
 
@@ -126,9 +126,5 @@ isRepeatingPosition Game {positions = currentPosition:previousPositions}
 
 
 alternate :: Game -> Game
-alternate Game {positions, activePlayer, passivePlayer} =
-  Game { positions
-       , activePlayer = passivePlayer
-       , passivePlayer = activePlayer
-       }
+alternate Game {..} = Game positions passivePlayer activePlayer
 

@@ -14,7 +14,8 @@ module API.WebSocket.Input.PlayStoneDTO
 
 import           API.JSON.Input.Game
 import           API.JSON.Input.Location
-import qualified API.WebSocket.Input.Data       as Data
+import qualified API.WebSocket.Input.Data as Data
+import           Control.Applicative
 import           Control.Lens
 
 
@@ -30,11 +31,13 @@ makeLenses ''DTO
 
 
 fromData :: Data.Data -> Maybe DTO
-fromData inputData =
-  case (Data.getGame inputData, Data.getCommandLocation inputData) of
-    (Nothing, _)                 -> Nothing
-    (_, Nothing)                 -> Nothing
-    (Just _game, Just _location) -> Just $ DTO _game _location
+fromData = liftA2 createDTO Data.getGame Data.getCommandLocation
+
+
+
+createDTO :: Maybe Game -> Maybe Location -> Maybe DTO
+createDTO (Just g) (Just l) = Just $ DTO g l
+createDTO _ _               = Nothing
 
 
 
