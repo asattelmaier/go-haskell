@@ -8,7 +8,7 @@ import           CLI.Render    (askForGridSize, cursorToLocation, renderEndGame,
                                 renderGame)
 import           CLI.UserInput (getCommand, getGridSize)
 import           Data.Maybe
-import           Go.Game       (Game, Player, Score, createGame, end, pass,
+import           Go.Game       (EndGame (EndGame), Game, createGame, end, pass,
                                 play)
 
 
@@ -54,7 +54,7 @@ run game cursor = do
 
 
 
-terminate :: ([Player], Score) -> IO ()
-terminate (winners, score) = do
+terminate :: EndGame -> IO ()
+terminate (EndGame winners score) = do
   putStr $ renderEndGame (winners, score)
   return ()

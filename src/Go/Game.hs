@@ -5,6 +5,7 @@ module Go.Game
 ( Game (Game, positions, activePlayer, passivePlayer)
 , Player
 , Score
+, EndGame (EndGame)
 , createGame
 , play
 , pass
@@ -17,12 +18,18 @@ import           Go.Board
 
 
 
-type Score  = Int
-type Player = Color
-data Game   = Game { positions     :: [Board]
-                   , activePlayer  :: Player
-                   , passivePlayer :: Player
-                   } deriving (Show)
+type Player  = Color
+
+type Score   = Int
+
+data EndGame = EndGame { winner :: [Player]
+                       , score  :: Score
+                       } deriving (Show)
+
+data Game    = Game    { positions     :: [Board]
+                       , activePlayer  :: Player
+                       , passivePlayer :: Player
+                       } deriving (Show)
 
 
 
@@ -34,17 +41,17 @@ createGame grid = Game { positions     = [createBoard grid]
 
 
 
-end :: Game -> ([Player], Score)
+end :: Game -> EndGame
 end Game {..}
-  | activePlayerScore > passivePlayerScore  = ([activePlayer], activePlayerScore)
-  | activePlayerScore == passivePlayerScore = ([activePlayer, passivePlayer], activePlayerScore)
-  | otherwise                               = ([passivePlayer], passivePlayerScore)
+  | activePlayerScore > passivePlayerScore  = EndGame [activePlayer] activePlayerScore
+  | activePlayerScore == passivePlayerScore = EndGame [activePlayer, passivePlayer] activePlayerScore
+  | otherwise                               = EndGame [passivePlayer] passivePlayerScore
   where activePlayerScore  = getScore (head positions) activePlayer
         passivePlayerScore = getScore (head positions) passivePlayer
 
 
 
-getScore :: Board -> Player -> Score
+getScore :: Board -> Player -> Int
 getScore board = length . getArea board
 
 

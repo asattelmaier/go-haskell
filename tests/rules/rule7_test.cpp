@@ -7,7 +7,8 @@
 /*
  * Rule 7
  *
- * When it is their turn, a player may either pass (by announcing "pass" and performing no action) or play.
+ * When it is their turn, a player may either pass (by announcing "pass" and
+ * performing no action) or play.
  * A play consists of the following steps (performed in the prescribed order):
  *
  */

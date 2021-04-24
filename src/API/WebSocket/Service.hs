@@ -8,11 +8,11 @@ module API.WebSocket.Service
 
 import           API.REST.Output.GameDTO
 import qualified API.WebSocket.Input.CreateGameDTO as CreateGame
-import qualified API.WebSocket.Input.PassDTO       as Pass
+import qualified API.WebSocket.Input.PassDTO       as Input.Pass
 import qualified API.WebSocket.Input.PlayStoneDTO  as PlayStone
+import qualified API.WebSocket.Output.PassDTO      as Output.Pass
 import           Control.Applicative
 import qualified Go.Game                           as Go
-
 
 
 createGame :: CreateGame.DTO -> GameDTO
@@ -25,6 +25,13 @@ playStone = GameDTO . liftA2 Go.play PlayStone.getGame PlayStone.getLocation
 
 
 
-pass :: Pass.DTO -> Maybe GameDTO
-pass = fmap GameDTO . Go.pass . Pass.getGame
+-- TODO: Refactor, try to avoid the flips for the sake of readability
+pass :: Input.Pass.DTO -> Output.Pass.DTO
+pass = flip maybe (flip Output.Pass.DTO Nothing . Just) . end
+       <*> Go.pass . Input.Pass.getGame
+
+
+
+end :: Input.Pass.DTO -> Output.Pass.DTO
+end = Output.Pass.DTO Nothing . Just . Go.end . Input.Pass.getGame
 

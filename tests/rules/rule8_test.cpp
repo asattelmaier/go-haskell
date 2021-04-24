@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include <iostream>
 #include "../utils/socket_api.h"
 #include "../utils/board.h"
 
@@ -8,8 +7,9 @@
 /*
  * Rule 8
  *
- * A play is illegal if it would have the effect (after all steps of the play have been completed)
- * of creating a position that has occurred previously in the game.
+ * A play is illegal if it would have the effect (after all steps of the play
+ * have been completed) of creating a position that has occurred previously in
+ * the game.
  *
  */
 

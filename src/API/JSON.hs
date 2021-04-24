@@ -15,7 +15,6 @@ import qualified API.JSON.Output.DTO        as Output
 import           Data.Aeson
 import qualified Data.ByteString.Lazy.Char8 as BL
 import           Data.Maybe
-import           Go.Board
 import           Go.Game
 
 
@@ -60,6 +59,6 @@ response outputDTO = BL.putStrLn $ encode outputDTO
 
 
 -- TODO: Add implementation for response Score
-responseScore :: ([Color], Score) -> IO ()
-responseScore score = BL.putStrLn (encode score)
+responseScore :: EndGame -> IO ()
+responseScore (EndGame winner score) = BL.putStrLn (encode score)
 

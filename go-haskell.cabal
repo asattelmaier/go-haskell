@@ -38,6 +38,7 @@ executable go-haskell
     API.JSON.Output.Location
     API.JSON.Output.State
     API.JSON.Output.Color
+    API.JSON.Output.EndGame
 
     API.REST.Server
     API.REST.Utils
@@ -54,6 +55,7 @@ executable go-haskell
     API.WebSocket.Input.PlayStoneDTO
     API.WebSocket.Input.PassDTO
     API.WebSocket.Input.Command
+    API.WebSocket.Output.PassDTO
   build-depends:
     base               ^>=4.14.1.0,
     process            == 1.*,
