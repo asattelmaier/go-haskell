@@ -3,7 +3,7 @@
 
 
 
-module API.WebSocket.Input.CreateGameDTO
+module API.WebSocket.Input.CreateDTO
 ( DTO (DTO)
 , getSize
 , fromData

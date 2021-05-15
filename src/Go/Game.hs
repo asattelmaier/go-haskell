@@ -6,7 +6,7 @@ module Go.Game
 , Player
 , Score
 , EndGame (EndGame)
-, createGame
+, create
 , play
 , pass
 , end
@@ -33,11 +33,11 @@ data Game    = Game    { positions     :: [Board]
 
 
 
-createGame :: Int -> Game
-createGame grid = Game { positions     = [createBoard grid]
-                       , activePlayer  = Black
-                       , passivePlayer = White
-                       }
+create :: Int -> Game
+create grid = Game { positions     = [createBoard grid]
+                   , activePlayer  = Black
+                   , passivePlayer = White
+                   }
 
 
 

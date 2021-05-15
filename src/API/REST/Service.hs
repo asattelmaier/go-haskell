@@ -18,6 +18,6 @@ defaultGridSize = 19
 
 
 createGame :: CreateGameDTO -> GameDTO
-createGame = GameDTO . Go.createGame . getSize
+createGame = GameDTO . Go.create . getSize
   where getSize = fromMaybe defaultGridSize . view size
 

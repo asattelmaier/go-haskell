@@ -39,7 +39,7 @@ handleInputDTO Input.DTO {..} =
   -- TODO: This logic can be reused.
   case command of
     NewGame   -> response $ Output.DTO newGame
-      where newGame = createGame $ fromMaybe defaultGridSize size
+      where newGame = create $ fromMaybe defaultGridSize size
 
 
     Pass      -> maybe (responseScore endGame) responseGame passGame

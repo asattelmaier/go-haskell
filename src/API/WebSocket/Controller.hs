@@ -4,15 +4,15 @@ module API.WebSocket.Controller
 
 
 import           API.WebSocket.Input.Command
-import qualified API.WebSocket.Input.CreateGameDTO as CreateGameDTO
+import qualified API.WebSocket.Input.CreateDTO as CreateDTO
 import           API.WebSocket.Input.Data
-import qualified API.WebSocket.Input.PassDTO       as PassDTO
-import qualified API.WebSocket.Input.PlayStoneDTO  as PlayStoneDTO
-import qualified API.WebSocket.Service             as Service
-import qualified Data.Aeson                        as JSON
-import           Data.Text                         (pack)
-import           Data.Text.Lazy                    (Text)
-import           Data.Text.Lazy.Encoding           (decodeUtf8, encodeUtf8)
+import qualified API.WebSocket.Input.PassDTO   as PassDTO
+import qualified API.WebSocket.Input.PlayDTO   as PlayDTO
+import qualified API.WebSocket.Service         as Service
+import qualified Data.Aeson                    as JSON
+import           Data.Text                     (pack)
+import           Data.Text.Lazy                (Text)
+import           Data.Text.Lazy.Encoding       (decodeUtf8, encodeUtf8)
 
 
 
@@ -29,21 +29,21 @@ handle rawData = do
 
       case getCommandName inputData of
 
-        CreateGame -> createGame inputData
+        Create -> create inputData
 
-        PlayStone  -> playStone inputData
+        Play   -> play inputData
 
-        Pass       -> pass inputData
-
-
-
-createGame :: Data -> Text
-createGame = respond . fmap Service.createGame . CreateGameDTO.fromData
+        Pass   -> pass inputData
 
 
 
-playStone :: Data -> Text
-playStone = respond . fmap Service.playStone . PlayStoneDTO.fromData
+create :: Data -> Text
+create = respond . fmap Service.create . CreateDTO.fromData
+
+
+
+play :: Data -> Text
+play = respond . fmap Service.play . PlayDTO.fromData
 
 
 

@@ -12,11 +12,6 @@
  *
  */
 
-// Territory
-// In the final position, an empty intersection is said to belong to a player's
-// territory if all stones adjacent to it or to an empty intersection connected
-// to it are of that player's color.
-
 TEST(Rule9, Territory) {
   json game = socket_api::create_game(9);
   

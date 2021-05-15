@@ -75,13 +75,13 @@ namespace socket_api {
   
 
   json create_game() {
-    return send(R"({ "command": { "name": "CreateGame" } })"_json);
+    return send(R"({ "command": { "name": "Create" } })"_json);
   }
 
 
 
   json create_game(int size) {
-    json data = R"({ "command": { "name": "CreateGame" } })"_json;
+    json data = R"({ "command": { "name": "Create" } })"_json;
     data["command"]["size"] = size;
     
     return send(data);
@@ -90,7 +90,7 @@ namespace socket_api {
 
 
   json play_stone(json game, tuple<int, int> location) {
-    json data = R"({ "command": { "name": "PlayStone" } })"_json;
+    json data = R"({ "command": { "name": "Play" } })"_json;
     data["command"]["location"] = create_location(location);
     data["game"] = game;
     

@@ -5,7 +5,7 @@
 
 module API.WebSocket.Input.Command
 ( Command (Command)
-, Name (CreateGame, PlayStone, Pass)
+, Name (Create, Play, Pass)
 , name
 , location
 , size
@@ -19,8 +19,8 @@ import           Data.Aeson
 
 
 
-data Name = CreateGame
-          | PlayStone
+data Name = Create
+          | Play
           | Pass
           deriving (Show)
 
@@ -28,9 +28,9 @@ data Name = CreateGame
 
 instance FromJSON Name where
   parseJSON name = case name of
-    "CreateGame" -> pure CreateGame
-    "PlayStone"  -> pure PlayStone
-    "Pass"       -> pure Pass
+    "Create" -> pure Create
+    "Play"   -> pure Play
+    "Pass"   -> pure Pass
 
 
 

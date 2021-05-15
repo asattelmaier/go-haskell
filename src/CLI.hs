@@ -8,7 +8,7 @@ import           CLI.Render    (askForGridSize, cursorToLocation, renderEndGame,
                                 renderGame)
 import           CLI.UserInput (getCommand, getGridSize)
 import           Data.Maybe
-import           Go.Game       (EndGame (EndGame), Game, createGame, end, pass,
+import           Go.Game       (EndGame (EndGame), Game, create, end, pass,
                                 play)
 
 
@@ -25,7 +25,7 @@ main = do
 
 setup :: Int -> IO ()
 setup gridSize = run game cursor
-  where game   = createGame gridSize
+  where game   = create gridSize
         cursor = createCursor
 
 

@@ -51,8 +51,8 @@ executable go-haskell
     API.WebSocket.Controller
     API.WebSocket.Service
     API.WebSocket.Input.Data
-    API.WebSocket.Input.CreateGameDTO
-    API.WebSocket.Input.PlayStoneDTO
+    API.WebSocket.Input.CreateDTO
+    API.WebSocket.Input.PlayDTO
     API.WebSocket.Input.PassDTO
     API.WebSocket.Input.Command
     API.WebSocket.Output.PassDTO
