@@ -42,6 +42,8 @@ runServer port = do
 server :: WS.ServerApp
 server pending = do
   client <- WS.acceptRequest pending
+  
+  putStrLn "New Client"
 
   WS.withPingThread client 30 (return ()) $ do
     communicate client

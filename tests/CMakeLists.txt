@@ -21,6 +21,7 @@ add_executable(
   rules/rule7_test.cpp
   rules/rule8_test.cpp
   rules/rule9_test.cpp
+  rules/rule10_test.cpp
 
   utils/socket_api.cpp
   utils/socket_api.h
