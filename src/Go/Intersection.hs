@@ -8,19 +8,25 @@ module Go.Intersection
 , hasSameState
 , hasColor
 , includes
+, create
 ) where
 
 
 
 import           Data.List
 import           Data.Maybe
+import           Go.Color   (Color (Black, White))
 
 
 
 data Location     = Location Int Int deriving (Show, Eq)
-data Color        = Black | White deriving (Show, Eq)
 data State        = Empty | Stone Color deriving (Show, Eq)
 data Intersection = Intersection Location State deriving (Show, Eq)
+
+
+
+create :: Location -> Color -> Intersection
+create location color = Intersection location (Stone color)
 
 
 

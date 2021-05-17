@@ -13,17 +13,24 @@ module Go.Board
 
 
 
+import           Control.Lens    (ix, (&), (.~))
 import           Data.Maybe
-import           Go.Intersection
+import           Go.Color        (Color (Black, White))
+import           Go.Intersection (Intersection (Intersection),
+                                  Location (Location), State (Empty, Stone),
+                                  hasColor, hasSameState, includes, isEmpty,
+                                  setEmpty)
+import qualified Go.Intersection as Intersection (create)
 
 
 
 type Board = [[Intersection]]
 
 
+
 createBoard :: Int -> Board
-createBoard grid = (map . map) addEmptyIntersection board
-  where board = map (zip [0..] . replicate grid) [0..(grid - 1)]
+createBoard size = (map . map) addEmptyIntersection board
+  where board = map (zip [0..] . replicate size) [0..(size - 1)]
 
 
 
@@ -32,15 +39,15 @@ addEmptyIntersection (x, y) = Intersection (Location x y) Empty
 
 
 
-placeStone :: Board -> Location -> State -> Board
-placeStone board location state = (map . map) (updateState location state) board
+placeStone :: Board -> Color -> Location -> Board
+placeStone board color location = setIntersection board location intersection
+  where intersection = Intersection.create location color
 
 
 
-updateState :: Location -> State -> Intersection -> Intersection
-updateState locationToUpdate newState (Intersection location state)
-  | locationToUpdate == location = Intersection location newState
-  | otherwise                    = Intersection location state
+setIntersection :: Board -> Location -> Intersection -> Board
+setIntersection board (Location x y) intersection = board & ix y .~ setInRow
+  where setInRow = (board!!y) & ix x .~ intersection
 
 
 
@@ -192,3 +199,4 @@ getLeftAdjacent board (Location x y)
   | isOutOfField     = Nothing
   | otherwise        = Just (board!!(y - 1)!!x)
   where isOutOfField = (y - 1) < 0
+

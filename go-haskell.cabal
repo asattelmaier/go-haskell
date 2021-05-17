@@ -15,8 +15,11 @@ executable go-haskell
   main-is:             Main.hs
   other-modules:
     Go.Game
+    Go.Player
+    Go.Positions
     Go.Board
     Go.Intersection
+    Go.Color
     
     CLI
     CLI.Command
