@@ -3,6 +3,7 @@
 
 
 
+#include <gtest/gtest.h>
 #include <tuple>
 #include <string>
 #include <atomic>
@@ -31,10 +32,16 @@ namespace socket_api {
   json create_game(int size);
 
   json create_game();
+  
+  json create_game(string position);
 
   json play_stone(json game, tuple<int, int> location);
+  
+  json play_stone(json game, string position);
 
   json pass(json game);
+
+  void assert_eq(json game, string position);
 
 }
 

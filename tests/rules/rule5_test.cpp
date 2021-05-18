@@ -1,4 +1,3 @@
-#include <gtest/gtest.h>
 #include "../utils/socket_api.h"
 #include "../utils/board.h"
 
@@ -12,12 +11,18 @@
  */
 
 TEST(Rule5, InitialPosition) {
-  json game = socket_api::create_game();
-  
-  json board = board::get_board(game);
-  bool hasBlackState = board::has_state(board, "Black");
-  bool hasWhiteState = board::has_state(board, "White");
-  bool isBoardEmpty = !hasBlackState && !hasWhiteState;
+  json game = socket_api::create_game(5);
 
-  ASSERT_TRUE(isBoardEmpty);
+  socket_api::assert_eq(game, R"(
+    Active: Black
+    +--+--+--+--+
+    |  |  |  |  |
+    +--+--+--+--+
+    |  |  |  |  |
+    +--+--+--+--+
+    |  |  |  |  |
+    +--+--+--+--+
+    |  |  |  |  |
+    +--+--+--+--+
+  )");
 }

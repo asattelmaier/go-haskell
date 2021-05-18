@@ -1,4 +1,3 @@
-#include <gtest/gtest.h>
 #include "../utils/socket_api.h"
 #include "../utils/board.h"
 
@@ -14,166 +13,130 @@
  */
 
 TEST(Rule8, ProhibitionOfRepetition) {
-  json game = socket_api::create_game(5);
+  json game = socket_api::create_game(R"(
+    Active: White
+    +--X--O--+--+
+    |  |  |  |  |
+    X--+--+--O--+
+    |  |  |  |  |
+    +--X--O--+--+
+    |  |  |  |  |
+    +--+--+--+--+
+    |  |  |  |  |
+    +--+--+--+--+
+  )");
 
-  /*
-   *  +--X--O--+--+
-   *  |  |  |  |  |
-   *  X--+--+--O--+
-   *  |  |  |  |  |
-   *  +--X--O--+--+
-   *  |  |  |  |  |
-   *  +--+--+--+--+
-   *  |  |  |  |  |
-   *  +--+--+--+--+
-   */
-
-  game["positions"][0][0][1]["state"] = "Black";
-  game["positions"][0][1][0]["state"] = "Black";
-  game["positions"][0][2][1]["state"] = "Black";
-  game["positions"][0][0][2]["state"] = "White";
-  game["positions"][0][1][3]["state"] = "White";
-  game["positions"][0][2][2]["state"] = "White";
+  game = socket_api::play_stone(game, R"(
+    +--X--O--+--+
+    |  |  |  |  |
+    X--O--+--O--+
+    |  |  |  |  |
+    +--X--O--+--+
+    |  |  |  |  |
+    +--+--+--+--+
+    |  |  |  |  |
+    +--+--+--+--+
+  )");
   
-  /*
-   *  +--X--O--+--+
-   *  |  |  |  |  |
-   *  X--O--+--O--+
-   *  |  |  |  |  |
-   *  +--X--O--+--+
-   *  |  |  |  |  |
-   *  +--+--+--+--+
-   *  |  |  |  |  |
-   *  +--+--+--+--+
-   */
+  game = socket_api::play_stone(game, R"(
+    +--X--O--+--+
+    |  |  |  |  |
+    X--O--X--O--+
+    |  |  |  |  |
+    +--X--O--+--+
+    |  |  |  |  |
+    +--+--+--+--+
+    |  |  |  |  |
+    +--+--+--+--+
+  )");
   
-  tuple<int, int> location = make_tuple(1, 1);
-  game["activePlayer"] = "White";
-  game["passivePlayer"] = "Black";
-  game = socket_api::play_stone(game, location);
+  game = socket_api::play_stone(game, R"(
+    +--X--O--+--+
+    |  |  |  |  |
+    X--O--X--O--+
+    |  |  |  |  |
+    +--X--O--+--+
+    |  |  |  |  |
+    +--+--+--+--+
+    |  |  |  |  |
+    +--+--+--+--+
+  )");
   
-  /*
-   *  +--X--O--+--+
-   *  |  |  |  |  |
-   *  X--+--X--O--+
-   *  |  |  |  |  |
-   *  +--X--O--+--+
-   *  |  |  |  |  |
-   *  +--+--+--+--+
-   *  |  |  |  |  |
-   *  +--+--+--+--+
-   */
-
-  location = make_tuple(2, 1);
-  game = socket_api::play_stone(game, location);
-
-  /*
-   *  +--X--O--+--+
-   *  |  |  |  |  |
-   *  X--O--+--O--+
-   *  |  |  |  |  |
-   *  +--X--O--+--+
-   *  |  |  |  |  |
-   *  +--+--+--+--+
-   *  |  |  |  |  |
-   *  +--+--+--+--+
-   */
-
-  location = make_tuple(1, 1);
-  
-  /*
-   *  +--X--O--+--+
-   *  |  |  |  |  |
-   *  X--+--X--O--+
-   *  |  |  |  |  |
-   *  +--X--O--+--+
-   *  |  |  |  |  |
-   *  +--+--+--+--+
-   *  |  |  |  |  |
-   *  +--+--+--+--+
-   */
- 
-  game = socket_api::play_stone(game, location);
-
-
-  ASSERT_EQ(game["positions"][0][1][1]["state"], "Empty");
-  ASSERT_EQ(game["activePlayer"], "White");
-  ASSERT_EQ(game["passivePlayer"], "Black");
+  socket_api::assert_eq(game, R"(
+    Active: White
+    +--X--O--+--+
+    |  |  |  |  |
+    X--+--X--O--+
+    |  |  |  |  |
+    +--X--O--+--+
+    |  |  |  |  |
+    +--+--+--+--+
+    |  |  |  |  |
+    +--+--+--+--+
+  )");
 }
 
 TEST(Rule8, LegalRecapture) {
-  json game = socket_api::create_game(5);
-
-  /*
-   *  +--+--+--+--+
-   *  |  |  |  |  |
-   *  O--+--+--+--+
-   *  |  |  |  |  |
-   *  +--O--+--+--+
-   *  |  |  |  |  |
-   *  +--X--X--+--+
-   *  |  |  |  |  |
-   *  O--O--X--+--+
-   */
-
-  game["positions"][0][3][1]["state"] = "Black";
-  game["positions"][0][3][2]["state"] = "Black";
-  game["positions"][0][4][2]["state"] = "Black";
-  game["positions"][0][1][0]["state"] = "White";
-  game["positions"][0][2][1]["state"] = "White";
-  game["positions"][0][4][0]["state"] = "White";
-  game["positions"][0][4][1]["state"] = "White";
+  json game = socket_api::create_game(R"(
+    Active: White
+    +--+--+--+--+
+    |  |  |  |  |
+    O--+--+--+--+
+    |  |  |  |  |
+    +--O--+--+--+
+    |  |  |  |  |
+    +--X--X--+--+
+    |  |  |  |  |
+    O--O--X--+--+
+  )");
   
-  /*
-   *  +--+--+--+--+
-   *  |  |  |  |  |
-   *  O--+--+--+--+
-   *  |  |  |  |  |
-   *  +--O--+--+--+
-   *  |  |  |  |  |
-   *  O--X--X--+--+
-   *  |  |  |  |  |
-   *  O--O--X--+--+
-   */
+  game = socket_api::play_stone(game, R"(
+    +--+--+--+--+
+    |  |  |  |  |
+    O--+--+--+--+
+    |  |  |  |  |
+    +--O--+--+--+
+    |  |  |  |  |
+    O--X--X--+--+
+    |  |  |  |  |
+    O--O--X--+--+
+  )");
   
-  tuple<int, int> location = make_tuple(0, 3);
-  game["activePlayer"] = "White";
-  game["passivePlayer"] = "Black";
-  game = socket_api::play_stone(game, location);
+  game = socket_api::play_stone(game, R"(
+    +--+--+--+--+
+    |  |  |  |  |
+    O--+--+--+--+
+    |  |  |  |  |
+    X--O--+--+--+
+    |  |  |  |  |
+    O--X--X--+--+
+    |  |  |  |  |
+    O--O--X--+--+
+  )");
   
-  /*
-   *  +--+--+--+--+
-   *  |  |  |  |  |
-   *  O--+--+--+--+
-   *  |  |  |  |  |
-   *  X--O--+--+--+
-   *  |  |  |  |  |
-   *  +--X--X--+--+
-   *  |  |  |  |  |
-   *  +--+--X--+--+
-   */
-
-  location = make_tuple(0, 2);
-  game = socket_api::play_stone(game, location);
-
-  /*
-   *  +--+--+--+--+
-   *  |  |  |  |  |
-   *  O--+--+--+--+
-   *  |  |  |  |  |
-   *  +--O--+--+--+
-   *  |  |  |  |  |
-   *  O--X--X--+--+
-   *  |  |  |  |  |
-   *  +--+--X--+--+
-   */
-
-  location = make_tuple(0, 3);
-  game = socket_api::play_stone(game, location);
-
-
-  ASSERT_EQ(game["positions"][0][2][0]["state"], "Empty");
-  ASSERT_EQ(game["positions"][0][3][0]["state"], "White");
-  ASSERT_EQ(game["activePlayer"], "Black");
-  ASSERT_EQ(game["passivePlayer"], "White");
+  game = socket_api::play_stone(game, R"(
+    +--+--+--+--+
+    |  |  |  |  |
+    O--+--+--+--+
+    |  |  |  |  |
+    X--O--+--+--+
+    |  |  |  |  |
+    O--X--X--+--+
+    |  |  |  |  |
+    +--+--X--+--+
+  )");
+  
+  socket_api::assert_eq(game, R"(
+    Active: Black
+    +--+--+--+--+
+    |  |  |  |  |
+    O--+--+--+--+
+    |  |  |  |  |
+    +--O--+--+--+
+    |  |  |  |  |
+    O--X--X--+--+
+    |  |  |  |  |
+    +--+--X--+--+
+  )");
 }
+

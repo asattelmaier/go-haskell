@@ -1,4 +1,3 @@
-#include <gtest/gtest.h>
 #include "../utils/socket_api.h"
 #include "../utils/board.h"
 
@@ -12,11 +11,20 @@
  */
 
 TEST(Rule6, Alternate) {
-  json game = socket_api::create_game();
+  json game = socket_api::create_game(5);
 
-  string firstPlayer = game["activePlayer"];
-  string secondPlayer = socket_api::pass(game)["activePlayer"];
-  bool hasAlternated = firstPlayer == "Black" && secondPlayer == "White";
+  game = socket_api::pass(game);
 
-  ASSERT_TRUE(hasAlternated);
+  socket_api::assert_eq(game, R"(
+    Active: White
+    +--+--+--+--+
+    |  |  |  |  |
+    +--+--+--+--+
+    |  |  |  |  |
+    +--+--+--+--+
+    |  |  |  |  |
+    +--+--+--+--+
+    |  |  |  |  |
+    +--+--+--+--+
+  )");
 }
