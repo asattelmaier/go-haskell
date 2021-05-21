@@ -15,6 +15,7 @@ import           Control.Applicative
 import qualified Go.Game                       as Go
 
 
+
 create :: Create.DTO -> GameDTO
 create = GameDTO . Go.create . Create.getSize
 

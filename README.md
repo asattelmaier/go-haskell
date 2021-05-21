@@ -5,7 +5,7 @@
 ## Prerequisites
 
 * ghc   >= 8.10.4
-* cabal >= 2.4
+* cabal >= 3.4
 * conan >= 1.33.1
 * cmake >= 2.8.12
 
@@ -22,7 +22,7 @@ cabal build
 ## Run CLI Game
 
 ```bash
-cabal run :go-haskell -- cli
+cabal run go-haskell -- cli
 ```
 
 

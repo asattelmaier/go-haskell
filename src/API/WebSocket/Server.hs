@@ -6,12 +6,18 @@ module API.WebSocket.Server where
 
 
 
-import qualified API.WebSocket.Controller as Controller
-import           Control.Monad            (forever)
-import           Data.Maybe               (fromMaybe)
-import           Data.Text.Lazy           (Text)
-import qualified Network.WebSockets       as WS
-import           Text.Read                (readMaybe)
+import qualified API.WebSocket.Controller         as Controller (handle)
+import           Control.Monad                    (forever)
+import           Data.ByteString                  (ByteString)
+import qualified Data.ByteString.Char8            as B
+import           Data.Text.Lazy                   (Text)
+import qualified Network.WebSockets               as WS
+import qualified Network.WebSockets.Snap          as WS
+import           Snap.Core                        (Snap)
+import qualified Snap.Core                        as Snap
+import           Snap.Http.Server                 as Snap
+import qualified Snap.Internal.Http.Server.Config as Snap
+import           Text.Read                        (readMaybe)
 
 
 
@@ -19,30 +25,35 @@ type Client = WS.Connection
 
 
 
-defaultPort :: Int
-defaultPort = 9000
+main :: Maybe String -> Maybe String -> IO ()
+main host port = do runServer $ getConfig (readHost host) (readMaybe =<< port)
 
 
 
-main :: Maybe String -> IO ()
-main port = do
-  runServer (fromMaybe defaultPort (readMaybe =<< port))
+readHost :: Maybe String -> Maybe ByteString
+readHost = fmap B.pack
 
 
 
-runServer :: Int -> IO ()
-runServer port = do
-  -- TODO: Add logger
-  putStrLn ("Listening on ws://127.0.0.1:" ++ show port)
-
-  WS.runServer "127.0.0.1" port server
+getConfig :: Maybe ByteString -> Maybe Int -> Config Snap a
+getConfig host port = defaultConfig { Snap.port = port, Snap.bind = host }
 
 
 
-server :: WS.ServerApp
-server pending = do
+runServer :: Config Snap a -> IO ()
+runServer config = do Snap.httpServe config routes
+
+
+
+routes :: Snap ()
+routes = Snap.route [("", WS.runWebSocketsSnap app)]
+
+
+
+app :: WS.ServerApp
+app pending = do
   client <- WS.acceptRequest pending
-  
+
   putStrLn "New Client"
 
   WS.withPingThread client 30 (return ()) $ do
