@@ -2,14 +2,17 @@
 
 
 
-module API.JSON.Input.Intersection where
+module API.JSON.Input.Intersection
+( Intersection (Intersection)
+) where
 
 
 
 import           API.JSON.Input.Location ()
 import           API.JSON.Input.State    ()
-import           Data.Aeson
-import           Go.Board
+import           Data.Aeson              (FromJSON, Value (Object), parseJSON,
+                                          (.:))
+import           Go.Board                (Intersection (Intersection))
 
 
 

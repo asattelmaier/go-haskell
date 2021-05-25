@@ -1,36 +1,35 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TemplateHaskell   #-}
+{-# LANGUAGE RecordWildCards   #-}
 
 
 
 module API.WebSocket.Input.PassDTO
-( DTO (DTO)
-, fromData
+( PassDTO (PassDTO)
 , getGame
 ) where
 
 
 
-import           API.JSON.Input.Game
-import qualified API.WebSocket.Input.Data as Data
-import           Control.Lens
+import           API.JSON.Input.Game                (Game)
+import           API.WebSocket.Input.PassCommandDTO (PassCommandDTO)
+import           Data.Aeson                         (FromJSON, Value (Object),
+                                                     parseJSON, (.:))
 
 
 
-newtype DTO = DTO { _game :: Game
-                  } deriving (Show)
+data PassDTO = PassDTO { command :: PassCommandDTO
+                       , game    :: Game
+                       } deriving (Show)
 
 
 
-makeLenses ''DTO
+instance FromJSON PassDTO where
+  parseJSON (Object v) = PassDTO
+    <$> v .: "command"
+    <*> v .: "game"
 
 
 
-fromData :: Data.Data -> Maybe DTO
-fromData = fmap DTO . Data.getGame
-
-
-
-getGame :: DTO -> Game
-getGame = view game
+getGame :: PassDTO -> Game
+getGame PassDTO {..} = game
 

@@ -3,19 +3,22 @@
 
 
 module API.JSON.Output.Game
-( Go.Game
+( Game (Game)
 ) where
 
 
 
 import           API.JSON.Output.Intersection ()
-import           Data.Aeson
-import qualified Go.Game                      as Go
+import           API.JSON.Output.Settings     ()
+import           Data.Aeson                   (ToJSON, object, toJSON, (.=))
+import           Go.Game                      (Game (Game))
 
 
 
-instance ToJSON Go.Game where
-  toJSON (Go.Game positions activePlayer passivePlayer) =
+instance ToJSON Game where
+  toJSON (Game positions activePlayer passivePlayer settings) =
     object [ "positions"     .= positions,
              "activePlayer"  .= activePlayer,
-             "passivePlayer" .= passivePlayer ]
+             "passivePlayer" .= passivePlayer,
+             "settings"      .= settings ]
+

@@ -1,4 +1,3 @@
-{-# LANGUAGE NamedFieldPuns  #-}
 {-# LANGUAGE RecordWildCards #-}
 
 
@@ -17,11 +16,14 @@ module Go.Game
 
 
 import           Control.Monad (liftM2)
-import           Go.Board      (Location, createBoard, getArea, isLocationEmpty,
-                                placeStone, removeStonesWithoutLiberty)
+import           Go.Board      (Location, createBoard, getArea, placeStone,
+                                removeStonesWithoutLiberty)
+import qualified Go.Board      as Board (isEmpty)
 import           Go.Player     (Player, createBlackPlayer, createWhitePlayer)
 import           Go.Positions  (Position, Positions)
 import qualified Go.Positions  as Positions (add, get, getLastPositions)
+import           Go.Settings   (Settings)
+import qualified Go.Settings   as Settings (getBoardSize, getIsSuicideAllowed)
 
 
 
@@ -34,6 +36,7 @@ data EndGame = EndGame { winner :: [Player]
 data Game    = Game    { positions     :: Positions
                        , activePlayer  :: Player
                        , passivePlayer :: Player
+                       , settings      :: Settings
                        } deriving (Show)
 
 
@@ -58,6 +61,7 @@ addPosition game position = Game
     . (Positions.add position . getPositions)
   <*> getActivePlayer
   <*> getPassivePlayer
+  <*> getSettings
     $ game
 
 
@@ -67,16 +71,27 @@ removePreviousPosition = Game
     . getLastPositions
   <*> getActivePlayer
   <*> getPassivePlayer
+  <*> getSettings
 
 
 
 getActivePlayer :: Game -> Player
-getActivePlayer Game {..} = activePlayer
+getActivePlayer = activePlayer
 
 
 
 getPassivePlayer :: Game -> Player
-getPassivePlayer Game {..} = passivePlayer
+getPassivePlayer = passivePlayer
+
+
+
+getSettings :: Game -> Settings
+getSettings = settings
+
+
+
+getIsSuicideAllowed :: Game -> Bool
+getIsSuicideAllowed = Settings.getIsSuicideAllowed . getSettings
 
 
 
@@ -84,8 +99,14 @@ getPlayers :: Game -> [Player]
 getPlayers game = [getActivePlayer game, getPassivePlayer game]
 
 
-create :: Int -> Game
-create size = Game [createBoard size] createBlackPlayer createWhitePlayer
+
+create :: Settings -> Game
+create settings = Game
+  { positions     = [createBoard $ Settings.getBoardSize settings]
+  , activePlayer  = createBlackPlayer
+  , passivePlayer = createWhitePlayer
+  , settings      = settings
+  }
 
 
 
@@ -134,7 +155,9 @@ isConsecutivePass = (==) . getPosition 0 <*> getPosition 1
 
 play :: Game -> Location -> Game
 play game location
-  | isEmpty game location = maybe game alternate .
+  | isEmpty game location = maybe
+                              game
+                              alternate .
                             prohibitRepetition .
                             selfCapture .
                             capture $
@@ -144,7 +167,7 @@ play game location
 
 
 isEmpty :: Game -> Location -> Bool
-isEmpty = isLocationEmpty . getPosition 0
+isEmpty = Board.isEmpty . getPosition 0
 
 
 
@@ -163,8 +186,13 @@ capture = updatePosition <*> getPassivePlayer
 
 
 
-selfCapture :: Game -> Game
-selfCapture = updatePosition <*> getActivePlayer
+selfCapture :: Game -> Maybe Game
+selfCapture game
+  | not isSuicideAllowed && isSuicide = Nothing
+  | otherwise                         = Just capturedGame
+  where isSuicideAllowed = getIsSuicideAllowed game
+        isSuicide        = getPosition 0 game /= getPosition 0 capturedGame
+        capturedGame     = updatePosition <*> getActivePlayer $ game
 
 
 
@@ -175,10 +203,11 @@ updatePosition = liftM2 (.)
 
 
 
-prohibitRepetition :: Game -> Maybe Game
-prohibitRepetition game
-  | isRepeatingPosition game = Nothing
-  | otherwise                = Just game
+prohibitRepetition :: Maybe Game -> Maybe Game
+prohibitRepetition Nothing     = Nothing
+prohibitRepetition (Just game)
+  | isRepeatingPosition game   = Nothing
+  | otherwise                  = Just game
 
 
 
@@ -193,5 +222,8 @@ copyLatestPosition = addPosition <*> getPosition 0
 
 
 alternate :: Game -> Game
-alternate = Game . getPositions <*> getPassivePlayer <*> getActivePlayer
+alternate = Game . getPositions
+  <*> getPassivePlayer
+  <*> getActivePlayer
+  <*> getSettings
 

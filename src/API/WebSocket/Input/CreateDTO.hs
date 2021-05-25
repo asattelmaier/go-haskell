@@ -1,41 +1,38 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TemplateHaskell   #-}
 
 
 
 module API.WebSocket.Input.CreateDTO
-( DTO (DTO)
-, getSize
-, fromData
+( CreateDTO (CreateDTO)
+, getSettings
 ) where
 
 
 
-import           API.WebSocket.Input.Data (Data, getCommandSize)
-import           Control.Lens
-import           Data.Maybe               (fromMaybe)
+import           API.JSON.Input.Settings              (Settings)
+import           API.WebSocket.Input.CreateCommandDTO (CreateCommandDTO)
+import qualified API.WebSocket.Input.CreateCommandDTO as CreateCommandDTO (getSettings)
+import           Data.Aeson                           (FromJSON, Value (Object),
+                                                       parseJSON, (.:))
 
 
 
-newtype DTO = DTO { _size :: Int
-                  } deriving (Show)
+newtype CreateDTO = CreateDTO { command :: CreateCommandDTO
+                              }
 
 
 
-makeLenses ''DTO
+instance FromJSON CreateDTO where
+  parseJSON (Object v) = CreateDTO
+    <$> v .: "command"
 
 
 
-defaultGridSize :: Int
-defaultGridSize = 19
+getSettings :: CreateDTO -> Settings
+getSettings = CreateCommandDTO.getSettings . getCommand
 
 
 
-fromData :: Data -> Maybe DTO
-fromData = Just . DTO . fromMaybe defaultGridSize . getCommandSize
-
-
-
-getSize :: DTO -> Int
-getSize = view size
+getCommand :: CreateDTO -> CreateCommandDTO
+getCommand = command
 

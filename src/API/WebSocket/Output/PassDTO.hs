@@ -1,27 +1,26 @@
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
 
 
 
 module API.WebSocket.Output.PassDTO
-( DTO (DTO)
+( PassDTO (PassDTO)
 ) where
 
 
 
-import           API.JSON.Output.EndGame
-import           API.JSON.Output.Game
-import           Data.Aeson
+import           API.JSON.Output.EndGame (EndGame)
+import           API.JSON.Output.Game    (Game)
+import           Data.Aeson              (ToJSON, toJSON)
 
 
 
-data DTO = DTO { game    :: Maybe Game
-               , endGame :: Maybe EndGame
-               }
+data PassDTO = PassDTO { game    :: Maybe Game
+                       , endGame :: Maybe EndGame
+                       }
 
 
 
-instance ToJSON DTO where
-  toJSON (DTO game Nothing) = toJSON game
-  toJSON (DTO Nothing game) = toJSON game
+instance ToJSON PassDTO where
+  toJSON (PassDTO game Nothing) = toJSON game
+  toJSON (PassDTO Nothing game) = toJSON game
 

@@ -1,64 +1,29 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TemplateHaskell   #-}
 
 
 
 module API.WebSocket.Input.Data
-( Data (Data)
-, getCommand
-, getGame
-, getCommandName
-, getCommandLocation
-, getCommandSize
+( Data (CreateDTO, PlayDTO, PassDTO)
 ) where
 
 
 
-import           API.JSON.Input.Game
-import           API.JSON.Input.Location
-import           API.WebSocket.Input.Command
-import           Control.Lens
-import           Data.Aeson
+import           API.WebSocket.Input.CreateDTO (CreateDTO)
+import           API.WebSocket.Input.PassDTO   (PassDTO)
+import           API.WebSocket.Input.PlayDTO   (PlayDTO)
+import           Control.Applicative           ((<|>))
+import           Data.Aeson                    (FromJSON, parseJSON)
+import           Data.Aeson.Types              (Parser)
 
 
 
-data Data = Data { _command :: Command
-                 , _game    :: Maybe Game
-                 } deriving (Show)
-
-
-
-makeLenses ''Data
+data Data = CreateDTO CreateDTO | PlayDTO PlayDTO | PassDTO PassDTO
 
 
 
 instance FromJSON Data where
-  parseJSON (Object v) = Data
-    <$> v .:  "command"
-    <*> v .:? "game"
-
-
-
-getCommand :: Data -> Command
-getCommand = view command
-
-
-
-getGame :: Data -> Maybe Game
-getGame = view game
-
-
-
-getCommandName :: Data -> Name
-getCommandName = view name . getCommand
-
-
-
-getCommandLocation :: Data -> Maybe Location
-getCommandLocation = view location . getCommand
-
-
-
-getCommandSize :: Data -> Maybe Int
-getCommandSize = view size . getCommand
+  parseJSON v =
+    (CreateDTO <$> (parseJSON v :: Parser CreateDTO))
+    <|> (PlayDTO <$> (parseJSON v :: Parser PlayDTO))
+    <|> (PassDTO <$> (parseJSON v :: Parser PassDTO))
 

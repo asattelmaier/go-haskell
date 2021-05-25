@@ -37,3 +37,15 @@ TEST(Rule9, Territory) {
   ASSERT_EQ(game["score"], 43);
 }
 
+TEST(Rule9, EmptyBoard) {
+  json game = socket_api::create_game(R"(
+    +--+
+    |  |
+    +--+
+  )");
+  
+  game = socket_api::pass(socket_api::pass(game));
+
+  ASSERT_EQ(game["score"], 0);
+}
+

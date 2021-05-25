@@ -1,26 +1,23 @@
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
 
 
 
-module API.JSON
+module API.JSON.Client
 ( main
 ) where
 
 
 
-import           API.JSON.Input.Command
-import qualified API.JSON.Input.DTO         as Input
-import qualified API.JSON.Output.DTO        as Output
-import           Data.Aeson
-import qualified Data.ByteString.Lazy.Char8 as BL
-import           Data.Maybe
-import           Go.Game
-
-
-
-defaultGridSize :: Int
-defaultGridSize = 19
+import           API.JSON.Input.Command     (Command (NewGame, Pass, PlayStone))
+import qualified API.JSON.Input.DTO         as Input (DTO (DTO), command, game,
+                                                      location, size)
+import qualified API.JSON.Output.DTO        as Output (DTO (DTO))
+import           Data.Aeson                 (decode, encode)
+import qualified Data.ByteString.Lazy.Char8 as BL (pack, putStrLn)
+import           Data.Maybe                 (fromJust)
+import           Go.Game                    (EndGame (EndGame), create, end,
+                                             pass, play)
+import           Go.Settings                (Settings (Settings))
 
 
 
@@ -39,7 +36,7 @@ handleInputDTO Input.DTO {..} =
   -- TODO: This logic can be reused.
   case command of
     NewGame   -> response $ Output.DTO newGame
-      where newGame = create $ fromMaybe defaultGridSize size
+      where newGame = create (Settings size (Just False))
 
 
     Pass      -> maybe (responseScore endGame) responseGame passGame

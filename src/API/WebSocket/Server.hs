@@ -9,14 +9,20 @@ module API.WebSocket.Server where
 import qualified API.WebSocket.Controller         as Controller (handle)
 import           Control.Monad                    (forever)
 import           Data.ByteString                  (ByteString)
-import qualified Data.ByteString.Char8            as B
+import qualified Data.ByteString.Char8            as B (pack)
 import           Data.Text.Lazy                   (Text)
-import qualified Network.WebSockets               as WS
-import qualified Network.WebSockets.Snap          as WS
+import qualified Network.WebSockets               as WS (Connection, ServerApp,
+                                                         acceptRequest,
+                                                         receiveData,
+                                                         sendTextData,
+                                                         withPingThread)
+import qualified Network.WebSockets.Snap          as WS (runWebSocketsSnap)
 import           Snap.Core                        (Snap)
-import qualified Snap.Core                        as Snap
-import           Snap.Http.Server                 as Snap
-import qualified Snap.Internal.Http.Server.Config as Snap
+import qualified Snap.Core                        as Snap (route)
+import           Snap.Http.Server                 (Config)
+import qualified Snap.Http.Server                 as Snap (defaultConfig,
+                                                           httpServe)
+import qualified Snap.Internal.Http.Server.Config as Snap (bind, port)
 import           Text.Read                        (readMaybe)
 
 
@@ -36,7 +42,7 @@ readHost = fmap B.pack
 
 
 getConfig :: Maybe ByteString -> Maybe Int -> Config Snap a
-getConfig host port = defaultConfig { Snap.port = port, Snap.bind = host }
+getConfig host port = Snap.defaultConfig { Snap.port = port, Snap.bind = host }
 
 
 

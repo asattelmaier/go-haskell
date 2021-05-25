@@ -29,11 +29,11 @@ namespace socket_api {
 
   void init(string uri);
   
-  json create_game(int size);
-
   json create_game();
   
-  json create_game(string position);
+  json create_game(int size, bool isSuicideAllowed = true);
+
+  json create_game(string position, bool isSuicideAllowed = true);
 
   json play_stone(json game, tuple<int, int> location);
   

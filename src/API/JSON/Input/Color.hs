@@ -2,12 +2,14 @@
 
 
 
-module API.JSON.Input.Color where
+module API.JSON.Input.Color
+( Color
+) where
 
 
 
-import           Data.Aeson
-import           Go.Board
+import           Data.Aeson (FromJSON, parseJSON)
+import           Go.Board   (Color (Black, White))
 
 
 

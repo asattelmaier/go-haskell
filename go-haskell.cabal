@@ -15,28 +15,32 @@ executable go-haskell
   main-is:             Main.hs
   other-modules:
     Go.Game
+    Go.Settings
     Go.Player
     Go.Positions
     Go.Board
     Go.Intersection
+    Go.Location
     Go.Color
     
-    CLI
+    CLI.Client
     CLI.Command
     CLI.Cursor
     CLI.Render
     CLI.UserInput
    
-    API.JSON
+    API.JSON.Client
     API.JSON.Input.DTO
     API.JSON.Input.Command
     API.JSON.Input.Game
+    API.JSON.Input.Settings
     API.JSON.Input.Intersection
     API.JSON.Input.Location
     API.JSON.Input.State
     API.JSON.Input.Color
     API.JSON.Output.DTO
     API.JSON.Output.Game
+    API.JSON.Output.Settings
     API.JSON.Output.Intersection
     API.JSON.Output.Location
     API.JSON.Output.State
@@ -55,9 +59,12 @@ executable go-haskell
     API.WebSocket.Service
     API.WebSocket.Input.Data
     API.WebSocket.Input.CreateDTO
+    API.WebSocket.Input.CreateCommandDTO
     API.WebSocket.Input.PlayDTO
+    API.WebSocket.Input.PlayCommandDTO
     API.WebSocket.Input.PassDTO
-    API.WebSocket.Input.Command
+    API.WebSocket.Input.PassCommandDTO
+    API.WebSocket.Input.CommandDTO
     API.WebSocket.Output.PassDTO
   build-depends:
     base               ^>=4.14.1.0,

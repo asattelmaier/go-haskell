@@ -1,51 +1,55 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TemplateHaskell   #-}
+{-# LANGUAGE RecordWildCards   #-}
 
 
 
 module API.WebSocket.Input.PlayDTO
-( DTO (DTO)
+( PlayDTO (PlayDTO)
 , getGame
 , getLocation
-, fromData
+, getIsSuicideAllowed
 ) where
 
 
 
-import           API.JSON.Input.Game
-import           API.JSON.Input.Location
-import qualified API.WebSocket.Input.Data as Data
-import           Control.Applicative
-import           Control.Lens
+import           API.JSON.Input.Game                (Game)
+import           API.JSON.Input.Location            (Location)
+import           API.WebSocket.Input.PlayCommandDTO (PlayCommandDTO)
+import qualified API.WebSocket.Input.PlayCommandDTO as PlayCommandDTO (getIsSuicideAllowed,
+                                                                       getLocation)
+import           Data.Aeson                         (FromJSON, Value (Object),
+                                                     parseJSON, (.:))
 
 
 
-data DTO = DTO { _game     :: Game
-               , _location :: Location
-               } deriving (Show)
+data PlayDTO = PlayDTO { command :: PlayCommandDTO
+                       , game    :: Game
+                       } 
 
 
 
-makeLenses ''DTO
+instance FromJSON PlayDTO where
+  parseJSON (Object v) = PlayDTO
+    <$> v .: "command"
+    <*> v .: "game"
 
 
 
-fromData :: Data.Data -> Maybe DTO
-fromData = liftA2 createDTO Data.getGame Data.getCommandLocation
+getGame :: PlayDTO -> Game
+getGame PlayDTO {..} = game
 
 
 
-createDTO :: Maybe Game -> Maybe Location -> Maybe DTO
-createDTO (Just g) (Just l) = Just $ DTO g l
-createDTO _ _               = Nothing
+getCommand :: PlayDTO -> PlayCommandDTO
+getCommand = command
 
 
 
-getGame :: DTO -> Game
-getGame = view game
+getIsSuicideAllowed :: PlayDTO -> Maybe Bool
+getIsSuicideAllowed = PlayCommandDTO.getIsSuicideAllowed . getCommand
 
 
 
-getLocation :: DTO -> Location
-getLocation = view location
+getLocation :: PlayDTO -> Location
+getLocation = PlayCommandDTO.getLocation . getCommand
 

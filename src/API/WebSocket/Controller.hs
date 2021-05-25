@@ -3,13 +3,14 @@ module API.WebSocket.Controller
 ) where
 
 
-import           API.WebSocket.Input.Command
-import qualified API.WebSocket.Input.CreateDTO as CreateDTO
-import           API.WebSocket.Input.Data
-import qualified API.WebSocket.Input.PassDTO   as PassDTO
-import qualified API.WebSocket.Input.PlayDTO   as PlayDTO
-import qualified API.WebSocket.Service         as Service
-import qualified Data.Aeson                    as JSON
+
+import           API.WebSocket.Input.CreateDTO (CreateDTO)
+import           API.WebSocket.Input.Data      (Data (CreateDTO, PassDTO, PlayDTO))
+import           API.WebSocket.Input.PassDTO   (PassDTO)
+import           API.WebSocket.Input.PlayDTO   (PlayDTO)
+import qualified API.WebSocket.Service         as Service (create, pass, play)
+import qualified Data.Aeson                    as JSON (ToJSON, Value (String),
+                                                        decode, encode)
 import           Data.Text                     (pack)
 import           Data.Text.Lazy                (Text)
 import           Data.Text.Lazy.Encoding       (decodeUtf8, encodeUtf8)
@@ -19,36 +20,30 @@ import           Data.Text.Lazy.Encoding       (decodeUtf8, encodeUtf8)
 handle :: Text -> Text
 handle rawData = do
 
-
   case JSON.decode . encodeUtf8 $ rawData of
 
-    Nothing  -> respondError "No valid data provided"
+    Just (CreateDTO dto) -> create dto
 
-    Just inputData ->
+    Just (PlayDTO dto)   -> play dto
 
+    Just (PassDTO dto)   -> pass dto
 
-      case getCommandName inputData of
-
-        Create -> create inputData
-
-        Play   -> play inputData
-
-        Pass   -> pass inputData
+    Nothing              -> respondError "No valid data provided"
 
 
 
-create :: Data -> Text
-create = respond . fmap Service.create . CreateDTO.fromData
+create :: CreateDTO -> Text
+create = respond . Service.create
 
 
 
-play :: Data -> Text
-play = respond . fmap Service.play . PlayDTO.fromData
+play :: PlayDTO -> Text
+play = respond . Service.play
 
 
 
-pass :: Data -> Text
-pass = respond . fmap Service.pass . PassDTO.fromData
+pass :: PassDTO -> Text
+pass = respond . Service.pass
 
 
 

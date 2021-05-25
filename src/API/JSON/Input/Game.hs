@@ -3,14 +3,16 @@
 
 
 module API.JSON.Input.Game
-( Game
+( Game (Game)
 ) where
 
 
 
 import           API.JSON.Input.Intersection ()
-import           Data.Aeson
-import           Go.Game
+import           API.JSON.Input.Settings     ()
+import           Data.Aeson                  (FromJSON, Value (Object),
+                                              parseJSON, (.:))
+import           Go.Game                     (Game (Game))
 
 
 
@@ -19,4 +21,5 @@ instance FromJSON Game where
     <$> v .: "positions"
     <*> v .: "activePlayer"
     <*> v .: "passivePlayer"
+    <*> v .: "settings"
 

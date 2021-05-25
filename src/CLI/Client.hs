@@ -1,4 +1,4 @@
-module CLI (main) where
+module CLI.Client (main) where
 
 
 
@@ -7,9 +7,10 @@ import           CLI.Cursor    (Cursor, createCursor, translateCursor)
 import           CLI.Render    (askForGridSize, cursorToLocation, renderEndGame,
                                 renderGame)
 import           CLI.UserInput (getCommand, getGridSize)
-import           Data.Maybe
+import           Data.Maybe    (fromJust, isNothing)
 import           Go.Game       (EndGame (EndGame), Game, create, end, pass,
                                 play)
+import           Go.Settings   (Settings (Settings))
 
 
 
@@ -24,9 +25,10 @@ main = do
 
 
 setup :: Int -> IO ()
-setup gridSize = run game cursor
-  where game   = create gridSize
-        cursor = createCursor
+setup gridSize   = run game cursor
+  where game     = create settings
+        settings = Settings (Just gridSize) Nothing
+        cursor   = createCursor
 
 
 

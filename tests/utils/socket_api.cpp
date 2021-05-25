@@ -117,21 +117,23 @@ namespace socket_api {
   
 
   json create_game() {
-    return send(R"({ "command": { "name": "Create" } })"_json);
+    // TODO: Refactor Settings handling
+    return create_game(19, false);
   }
 
 
 
-  json create_game(int size) {
+  json create_game(int size, bool isSuicideAllowed) {
     json data = R"({ "command": { "name": "Create" } })"_json;
-    data["command"]["size"] = size;
+    data["command"]["settings"]["boardSize"] = size;
+    data["command"]["settings"]["isSuicideAllowed"] = isSuicideAllowed;
     
     return send(data);
   }
 
 
-  json create_game(string position) {
-    json game = create_game(get_size(position));
+  json create_game(string position, bool isSuicideAllowed) {
+    json game = create_game(get_size(position), isSuicideAllowed);
     istringstream stream(position);
     string line;
     int row = -1;

@@ -19,6 +19,7 @@ add_executable(
   rules/rule5_test.cpp
   rules/rule6_test.cpp
   rules/rule7_test.cpp
+  rules/rule7a_test.cpp
   rules/rule8_test.cpp
   rules/rule9_test.cpp
   rules/rule10_test.cpp
