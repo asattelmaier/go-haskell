@@ -10,7 +10,7 @@ import qualified API.WebSocket.Controller         as Controller (handle)
 import           Control.Monad                    (forever)
 import           Data.ByteString                  (ByteString)
 import qualified Data.ByteString.Char8            as B (pack)
-import           Data.Text.Lazy                   (Text)
+import qualified Data.ByteString.Lazy.Internal    as BL (ByteString)
 import qualified Network.WebSockets               as WS (Connection, ServerApp,
                                                          acceptRequest,
                                                          receiveData,
@@ -69,7 +69,7 @@ app pending = do
 
 communicate :: Client -> IO ()
 communicate client = forever $ do
-  clientData <- WS.receiveData client :: IO Text
+  clientData <- WS.receiveData client :: IO BL.ByteString
 
   WS.sendTextData client $ Controller.handle clientData
 

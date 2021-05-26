@@ -9,18 +9,16 @@ import           API.WebSocket.Input.Data      (Data (CreateDTO, PassDTO, PlayDT
 import           API.WebSocket.Input.PassDTO   (PassDTO)
 import           API.WebSocket.Input.PlayDTO   (PlayDTO)
 import qualified API.WebSocket.Service         as Service (create, pass, play)
-import qualified Data.Aeson                    as JSON (ToJSON, Value (String),
-                                                        decode, encode)
+import qualified Data.Aeson                    as JSON (ToJSON, decode, encode)
+import           Data.ByteString.Lazy.Internal (ByteString)
 import           Data.Text                     (pack)
-import           Data.Text.Lazy                (Text)
-import           Data.Text.Lazy.Encoding       (decodeUtf8, encodeUtf8)
 
 
 
-handle :: Text -> Text
-handle rawData = do
+handle :: ByteString -> ByteString
+handle payload = do
 
-  case JSON.decode . encodeUtf8 $ rawData of
+  case JSON.decode payload of
 
     Just (CreateDTO dto) -> create dto
 
@@ -32,26 +30,26 @@ handle rawData = do
 
 
 
-create :: CreateDTO -> Text
+create :: CreateDTO -> ByteString
 create = respond . Service.create
 
 
 
-play :: PlayDTO -> Text
+play :: PlayDTO -> ByteString
 play = respond . Service.play
 
 
 
-pass :: PassDTO -> Text
+pass :: PassDTO -> ByteString
 pass = respond . Service.pass
 
 
 
-respond :: JSON.ToJSON a => a -> Text
-respond = decodeUtf8 . JSON.encode
+respond :: JSON.ToJSON a => a -> ByteString
+respond = JSON.encode
 
 
 
-respondError :: String -> Text
-respondError = respond . JSON.String . pack . (++) "Error: "
+respondError :: String -> ByteString
+respondError = respond . pack . (++) "Error: "
 
