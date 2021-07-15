@@ -56,21 +56,28 @@ conan test tests GoHaskellSocketApiTest/0.0.1@go-haskell-socket-api/testing
 ```
 
 
+## Run Socket Server Container
 
-## Create REST Server Container
+```bash
+docker run -p 8000:8000 --name go-game-socket-server asattelmaier/go-game-socket-server:latest
+```
+
+
+
+## Update Socket Server Image
 
 You must first build the project.
 
 Create Image:
 
 ```bash
-docker image build -t go-haskell-rest-server -f docker/rest-server/Dockerfile .
+docker image build -t asattelmaier/go-game-socket-server:latest -f docker/socket-server/Dockerfile .
 ```
 
-Run Container:
+Push Image:
 
 ```bash
-docker run -p 8000:8000 --name go-haskell-rest-server go-haskell-rest-server:latest
+docker push asattelmaier/go-game-socket-server:latest
 ```
 
 

@@ -11,4 +11,13 @@ RUN mkdir log \
     && touch log/access.log \
     && touch log/error.log
 
-CMD ["./go-haskell", "socket"]
+RUN useradd -ms /bin/bash go
+
+RUN chown go log/access.log log/error.log go-haskell
+
+RUN chmod +x go-haskell
+
+USER go
+
+ENTRYPOINT ["./go-haskell", "socket"]
+
