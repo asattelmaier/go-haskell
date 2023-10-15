@@ -4,10 +4,11 @@
 
 ## Prerequisites
 
-* ghc   >= 8.10.4
-* cabal >= 3.4
-* conan >= 1.33.1
-* cmake >= 2.8.12
+* ghc    == 8.10.4
+* cabal  >= 3.4
+* python == 3.9
+* conan  == 1.60.1
+* cmake  >= 2.8.12
 
 
 
@@ -47,6 +48,7 @@ Export and build conan package:
 
 ```bash
 conan create . go-haskell-socket-api/testing
+conan profile update settings.compiler.libcxx=libstdc++11 default
 ```
 
 Run Tests:
