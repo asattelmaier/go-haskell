@@ -1,23 +1,34 @@
-FROM ubuntu:20.10
+FROM ubuntu:22.04@sha256:6120be6a2b7ce665d0cbddc3ce6eae60fe94637c6a66985312d1f02f63cc0bcd
 
-# TODO: Find a better solution for accessing the build product.
-# Currently the location to the build product can not be configured.
-# See: https://github.com/haskell/cabal/issues/3545
-COPY dist-newstyle/build/x86_64-linux/ghc-8.10.2/go-haskell-0.0.0.1/x/go-haskell/build/go-haskell/ /opt/go-haskell
 
+
+#==============================
+# Copy binary and assets
+#==============================
+COPY --chmod=500 dist-newstyle /opt/go-haskell/dist
+RUN find /opt/go-haskell/dist -type f -executable -name "go-haskell" -exec cp {} /opt/go-haskell/go-haskell \;
+RUN rm -rf /opt/go-haskell/dist
+
+
+
+#==============================
+# Create log files
+#==============================
 WORKDIR /opt/go-haskell
 
 RUN mkdir log \
     && touch log/access.log \
     && touch log/error.log
 
-RUN useradd -ms /bin/bash go
 
-RUN chown go log/access.log log/error.log go-haskell
 
-RUN chmod +x go-haskell
+#==============================
+# Create user
+#==============================
+RUN useradd -ms /bin/bash go-haskell \
+  && chown -R go-haskell:go-haskell /opt/go-haskell
 
-USER go
+USER go-haskell
 
 ENTRYPOINT ["./go-haskell", "rest"]
 
