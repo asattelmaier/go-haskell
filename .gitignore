@@ -3,4 +3,4 @@ dist-newstyle
 *.swp
 tests/build
 hie.yaml
-
+.idea

@@ -73,13 +73,19 @@ You must first build the project.
 Create Image:
 
 ```bash
+# Docker Hub
 docker image build -t asattelmaier/go-game-socket-server:latest -f docker/socket-server/Dockerfile .
+# Google Cloud
+docker image build -t europe-west1-docker.pkg.dev/PROJECT_ID/go-services/go-game-socket-server:latest -f docker/socket-server/Dockerfile .
 ```
 
 Push Image:
 
 ```bash
+# Docker Hub
 docker push asattelmaier/go-game-socket-server:latest
+# Google Cloud
+docker push europe-west1-docker.pkg.dev/PROJECT_ID/go-services/go-game-socket-server:latest
 ```
 
 
