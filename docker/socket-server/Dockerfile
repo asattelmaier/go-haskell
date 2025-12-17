@@ -1,4 +1,4 @@
-FROM ubuntu:22.04@sha256:6120be6a2b7ce665d0cbddc3ce6eae60fe94637c6a66985312d1f02f63cc0bcd
+FROM ubuntu:24.04
 
 
 

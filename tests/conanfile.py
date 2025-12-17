@@ -33,7 +33,7 @@ class GoHaskell:
 class TestGoHaskellSocketApi(ConanFile):
     settings = "os", "compiler", "arch", "build_type"
     generators = "cmake"
-    requires = ["gtest/1.10.0", "nlohmann_json/3.9.1", "websocketpp/0.8.2"]
+    requires = ["gtest/1.14.0", "nlohmann_json/3.11.3", "websocketpp/0.8.2"]
     test_app_name = "go_haskell_socket_api_test"
     environment_variables = {}
 

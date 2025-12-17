@@ -22,10 +22,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '20.x'
 
@@ -38,7 +38,7 @@ jobs:
         working-directory: infrastructure
 
       - name: Archive build artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.INFRASTRUCTURE_BUILD_ARTEFACT_NAME }}
           path: ${{ env.INFRASTRUCTURE_BUILD_ARTEFACT_PATH }}
@@ -49,15 +49,15 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-haskell@v1
+      - uses: haskell-actions/setup@v2
         with:
-          ghc-version: 'latest'
-          cabal-version: 'latest'
+          ghc-version: '9.6.4'
+          cabal-version: '3.10.3.0'
 
       - name: Cache
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         env:
           cache-name: cache-cabal
         with:
@@ -75,7 +75,7 @@ jobs:
       - name: Build
         run: cabal build --enable-benchmarks all
       - name: Archive build artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.APPLICATION_BUILD_ARTIFACT_NAME }}
           path: ${{ env.APPLICATION_BUILD_ARTIFACT_PATH }}
@@ -87,26 +87,26 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.11'
       - name: Install dependencies
         run: |
-          pip install conan==1.60.1
+          pip install conan==1.62.0
       - name: Download build artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.APPLICATION_BUILD_ARTIFACT_NAME }}
           path: ${{ env.APPLICATION_BUILD_ARTIFACT_PATH }}
       - name: Setup tests
         run: |
-          conan create . go-haskell-socket-api/testing
+          conan create . go-haskell-socket-api/testing --build=missing
           conan profile update settings.compiler.libcxx=libstdc++11 default
       - name: Run tests
-        run: conan test tests GoHaskellSocketApiTest/0.0.1@go-haskell-socket-api/testing
+        run: conan test tests GoHaskellSocketApiTest/0.0.1@go-haskell-socket-api/testing --build=missing
 
   pushToRegistry:
 
@@ -115,22 +115,22 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download build artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.APPLICATION_BUILD_ARTIFACT_NAME }}
           path: ${{ env.APPLICATION_BUILD_ARTIFACT_PATH }}
 
       - name: Log in to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Build and Push to Docker Hub
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: .
           push: true
@@ -146,37 +146,44 @@ jobs:
 
     env:
       LOCATION: europe-west1
+      REPOSITORY: go-services
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download build artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.APPLICATION_BUILD_ARTIFACT_NAME }}
           path: ${{ env.APPLICATION_BUILD_ARTIFACT_PATH }}
 
       - name: Login to Google Cloud
-        uses: google-github-actions/setup-gcloud@v0.3.0
+        uses: google-github-actions/auth@v2
         with:
-          service_account_key: ${{ secrets.GCLOUD_SA_KEY }}
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          export_default_credentials: true
+          credentials_json: ${{ secrets.GCLOUD_SA_KEY }}
 
       - name: Configure Docker Client
         run: |-
           gcloud auth configure-docker ${{ env.LOCATION }}-docker.pkg.dev --quiet
 
+      - name: Create Artifact Registry Repository
+        run: |
+          gcloud artifacts repositories create ${{ env.REPOSITORY }} \
+            --repository-format=docker \
+            --location=${{ env.LOCATION }} \
+            --description="Docker repository" \
+            --project=${{ vars.GCLOUD_PROJECT_ID }} || true
+
       - name: Build and Push to Google Cloud
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: .
           push: true
           file: ${{ env.DOCKER_FILE_PATH }}
           tags: |
-            ${{ env.LOCATION }}-docker.pkg.dev/${{ vars.GCLOUD_PROJECT_ID }}/go-services/${{ env.IMAGE_NAME }}:${{ github.sha }}
-            ${{ env.LOCATION }}-docker.pkg.dev/${{ vars.GCLOUD_PROJECT_ID }}/go-services/${{ env.IMAGE_NAME }}:latest
+            ${{ env.LOCATION }}-docker.pkg.dev/${{ vars.GCLOUD_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.LOCATION }}-docker.pkg.dev/${{ vars.GCLOUD_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:latest
 
   deployApplication:
     runs-on: ubuntu-latest
@@ -184,25 +191,23 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download build artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.INFRASTRUCTURE_BUILD_ARTEFACT_NAME }}
           path: ${{ env.INFRASTRUCTURE_BUILD_ARTEFACT_PATH }}
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.6.2"
 
       - name: Login to Google Cloud
-        uses: google-github-actions/setup-gcloud@v0.3.0
+        uses: google-github-actions/auth@v2
         with:
-          service_account_key: ${{ secrets.GCLOUD_SA_KEY }}
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          export_default_credentials: true
+          credentials_json: ${{ secrets.GCLOUD_SA_KEY }}
 
       - name: Deploy Application
         run: |
